@@ -1,0 +1,32 @@
+name: Colors
+main: tk.tyzoid.plugins.colors.colors
+version: 2.0.0
+author: Tyzoid
+permissions:
+    colors.*:
+        description: Gives access to all colors commands
+        children:
+            colors.rainbow: true
+            colors.hex: true
+            colors.admin: true
+            colors.prefix: true
+            colors.suffix: true
+            colors.reload: true
+    colors.rainbow:
+        description: Allows people to use rainbow mode. (Use with care - can create an eyesore)
+        default: true
+    colors.hex:
+        description: Allows people to use the "&" or "^" character (or a different one, depending on your configuration) followed by a hexadecimal code.
+        default: true
+    colors.admin:
+        description: Allows people to use the admin commands. (Setting/resetting prefixes and suffixes) Use with care.
+        default: false
+    colors.prefix:
+        description: Allows users to change their own prefix.
+        default: true
+    colors.suffix:
+        description: Allows users to change their own suffix.
+        default: true
+    colors.reload:
+        description: Allows users to reload the configuration file
+        default: false
