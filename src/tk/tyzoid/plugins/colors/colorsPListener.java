@@ -13,10 +13,13 @@ import tk.tyzoid.plugins.colors.colors;
 
 public class colorsPListener extends PlayerListener {
 	private final HashMap<Player, String> names = new HashMap<Player, String>();
+	private final HashMap<Player, Character> colorLocks = new HashMap<Player, Character>();
     private final colors plugin;
     private Names PSnames;
 	@SuppressWarnings("unused")
 	private String pluginname;
+	private String dcc; //the default color char (&)
+	private String regcc; //all color chars
 
     public colorsPListener(colors instance) {
         plugin = instance;
@@ -24,6 +27,8 @@ public class colorsPListener extends PlayerListener {
         
         PSnames = new Names(plugin);
         PSnames.loadNames();
+        dcc = plugin.colorSettings.getProperty("color-chars").split(",")[0];
+        regcc = "[" +plugin.colorSettings.getProperty("color-chars").split(",") + "]";
     }
     
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
@@ -266,7 +271,7 @@ public class colorsPListener extends PlayerListener {
 				int start = split[0].length() + 1;
 				String PSset = mess.substring(start, mess.length());
 				if(!rainbowPermissions){
-					PSset.replaceAll("&[Rr]", "");
+					PSset.replaceAll(regcc + "[Rr]", "");
 				}
 				
 				PSnames.setUserPrefix(player.getName(), PSset);
@@ -309,7 +314,7 @@ public class colorsPListener extends PlayerListener {
 				String PSset = mess.substring(start, mess.length());
 
 				if(!rainbowPermissions){
-					PSset.replaceAll("&[Rr]", "");
+					PSset.replaceAll(regcc + "[Rr]", "");
 				}
 				
 				PSnames.setUserSuffix(player.getName(), PSset);
@@ -348,6 +353,51 @@ public class colorsPListener extends PlayerListener {
 			player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aThe settings have been reloaded.");
 		}
 		
+		//The /colorlock command
+		String[] colorlockCommands = plugin.colorSettings.getProperty("colorlock-commands").split(",");
+		boolean colorlockCommandUsed = false;
+		
+		if(plugin.permissionsExists || plugin.useSuperperms){
+			if(plugin.hasPermission(player, "colors.colorlock") || player.isOp()){
+				for(int i = 0; (i < colorlockCommands.length && !colorlockCommandUsed); i++){
+					if(split[0].equalsIgnoreCase(colorlockCommands[i])){
+						colorlockCommandUsed = true;
+					}
+				}
+			}
+		} else {
+			if(player.isOp()){
+				for(int i = 0; (i < colorlockCommands.length && !colorlockCommandUsed); i++){
+					if(split[0].equalsIgnoreCase(colorlockCommands[i])){
+						colorlockCommandUsed = true;
+					}
+				}
+			}
+		}
+		if(colorlockCommandUsed){
+			//TODO: reference point
+			if(split.length == 2 && split[1].length() == 2){
+				if(plugin.isColorChar(split[1].toCharArray()[0]) && (plugin.isColorNumber(split[1].toCharArray()[1]) || Character.toLowerCase(split[1].toCharArray()[0]) == 'r')){
+					char colorChar = split[1].toCharArray()[1];
+					colorLocks.put(player, colorChar);
+				} else {
+					showHelpMenu_colorlock(player);
+				}
+			} else if(split.length == 1) {
+				colorLocks.remove(player);
+			} else {
+				showHelpMenu_colorlock(player);
+			}
+		}
+	}
+		
+	private void showHelpMenu_colorlock(Player player){
+		String[] message = {
+				"§b[§1C§2o§3l§4o§5r§6s§b] §aSyntax: §e/<colorlock> [" + dcc + "<color>]"};
+    	
+    	for(int i = 0; i < message.length; i++){
+    		player.sendMessage(message[i]);
+    	}
 	}
     
     private void showHelpMenu(Player player){
@@ -417,20 +467,23 @@ public class colorsPListener extends PlayerListener {
     	
     	if(plugin.permissionsExists || plugin.useSuperperms){
     		colorPerms = plugin.hasPermission(player, "colors.hex") || player.isOp();
-    		rainbowPerms = (plugin.hasPermission(player, "colors.hex") || player.isOp()) & rainbowEnabled;
+    		rainbowPerms = (plugin.hasPermission(player, "colors.hex") || player.isOp()) && rainbowEnabled;
     	} else {
     		colorPerms = true;
-    		rainbowPerms = player.isOp() & rainbowEnabled;
+    		rainbowPerms = player.isOp() && rainbowEnabled;
     	}
     	if(colorPerms){
     		String message = event.getMessage();
 			if(plugin.isChatColoring(player)){
 				if(chatFormatting){
-					event.setMessage("&r" + message);
+					event.setMessage(dcc + "r" + message);
 				} else {
 					event.setMessage(plugin.colorsChat(message));
 				}
 			} else {
+				if(colorLocks.containsKey(player)){
+					event.setMessage(message + dcc + colorLocks.get(player));
+				}
 				if(!chatFormatting){
 					event.setMessage(plugin.convertToColor(message, rainbowPerms));
 				}
@@ -440,7 +493,7 @@ public class colorsPListener extends PlayerListener {
     	if(chatFormatting){
     		if(!rainbowPerms){
     			String message = event.getMessage();
-    			message.replaceAll("&[Rr]", "");
+    			message.replaceAll(regcc + "[Rr]", "");
     			event.setMessage(message);
     		}
     		String format = plugin.colorSettings.getProperty("chat-formatting");

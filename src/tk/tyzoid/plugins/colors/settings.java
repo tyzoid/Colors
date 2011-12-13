@@ -39,6 +39,7 @@ public class settings {
 			settingsHolder.put("prefix-commands", loadProperty("prefix-commands", "/prefix"));
 			settingsHolder.put("suffix-commands", loadProperty("suffix-commands", "/suffix"));
 			settingsHolder.put("reload-commands", loadProperty("reload-commands", "/creload,/cr"));
+			settingsHolder.put("colorlock-commands", loadProperty("colorlock-commands", "/cl,/color,/colorlock"));
 			
 			if(!((settingsHolder.get("use-rainbow").equalsIgnoreCase("true")) || (settingsHolder.get("use-rainbow").equalsIgnoreCase("false")))){
 				System.out.println("[" + pluginname + "] Malformed property \"use-rainbow\". Resetting...");
@@ -76,12 +77,13 @@ public class settings {
 		
 			String[] chars = settingsHolder.get("color-chars").split(",");
 			boolean resetChatIndicators = false;
+			boolean exists = chars.length > 0;
 			for(int i = 0; i < chars.length && !resetChatIndicators; i++){
 				if(chars[i].toCharArray().length != 1){
 					resetChatIndicators = true;
 				}
 			}
-			if(resetChatIndicators){
+			if(resetChatIndicators || !exists){
 				System.out.println("[" + pluginname + "] Malformed property \"color-chars\". Resetting...");
 				setCProperty("color-chars", "&,^");
 				settingsHolder.put("color-chars", "&,^");
