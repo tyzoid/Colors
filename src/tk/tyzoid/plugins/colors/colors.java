@@ -23,10 +23,10 @@ import org.bukkit.event.Event.Priority;
  */
 public class colors extends JavaPlugin {
 	String pluginname = "colors";
-	
+
+    public settings colorSettings = new settings();
     private final colorsPListener playerListener = new colorsPListener(this);
     private final HashMap<Player, Boolean> colorify = new HashMap<Player, Boolean>();
-    public settings colorSettings = new settings();
     public PermissionHandler permissionHandler;
     public boolean permissionsExists = false;
     public boolean useSuperperms = false;
@@ -48,6 +48,7 @@ public class colors extends JavaPlugin {
         System.out.println("[" + pluginname + "] Starting " + pluginname + " v" + pdfFile.getVersion() + "...");
         setupPermissions();
         colorSettings.readSettings();
+        playerListener.plugin_init();
     }
     
     private void setupPermissions() {
@@ -142,7 +143,9 @@ public class colors extends JavaPlugin {
     					indexOfColorChar++;
     				}
     				
-    				indexOfColorChar--;
+    				if(found){
+    					indexOfColorChar--;
+    				}
     				
     				rainbowString = colorsChat(rainbowString.substring(i+2, indexOfColorChar));
     				withColor += rainbowString;

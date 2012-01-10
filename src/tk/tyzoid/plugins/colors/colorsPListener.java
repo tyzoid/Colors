@@ -27,7 +27,10 @@ public class colorsPListener extends PlayerListener {
         
         PSnames = new Names(plugin);
         PSnames.loadNames();
-        dcc = plugin.colorSettings.getProperty("color-chars").split(",")[0];
+    }
+    
+    public void plugin_init(){
+    	dcc = plugin.colorSettings.getProperty("color-chars").split(",")[0];
         regcc = "[" +plugin.colorSettings.getProperty("color-chars").split(",") + "]";
     }
     
@@ -380,14 +383,17 @@ public class colorsPListener extends PlayerListener {
 				if(plugin.isColorChar(split[1].toCharArray()[0]) && (plugin.isColorNumber(split[1].toCharArray()[1]) || Character.toLowerCase(split[1].toCharArray()[0]) == 'r')){
 					char colorChar = split[1].toCharArray()[1];
 					colorLocks.put(player, colorChar);
+					player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour specified color has been set.");
 				} else {
 					showHelpMenu_colorlock(player);
 				}
 			} else if(split.length == 1) {
 				colorLocks.remove(player);
+				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour color lock has been removed.");
 			} else {
 				showHelpMenu_colorlock(player);
 			}
+			event.setCancelled(true);
 		}
 	}
 		
@@ -439,7 +445,7 @@ public class colorsPListener extends PlayerListener {
     			suffix = (PSnames.getUserSuffix(playername).length() > 0) ? PSnames.getUserSuffix(playername) : suffix;
     		}
     		
-    		displayName = plugin.convertToColor(prefix + names.get(player) + suffix + "§f", true);
+    		displayName = plugin.convertToColor(prefix + player.getName() + suffix + "§f", true);
     		player.setDisplayName(displayName);
     		//player.setDisplayName(prefix + names.get(player) + suffix + "§f");
     	}
@@ -482,7 +488,7 @@ public class colorsPListener extends PlayerListener {
 				}
 			} else {
 				if(colorLocks.containsKey(player)){
-					event.setMessage(message + dcc + colorLocks.get(player));
+					event.setMessage(dcc + colorLocks.get(player) + message);
 				}
 				if(!chatFormatting){
 					event.setMessage(plugin.convertToColor(message, rainbowPerms));
