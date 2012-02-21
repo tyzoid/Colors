@@ -1,4 +1,4 @@
-package tk.tyzoid.plugins.colors;
+package tk.tyzoid.plugins.listeners;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.*;
 
-import tk.tyzoid.plugins.colors.Names;
 import tk.tyzoid.plugins.colors.colors;
+import tk.tyzoid.plugins.lib.Names;
 
 
 public class colorsPListener extends PlayerListener {
@@ -16,7 +16,7 @@ public class colorsPListener extends PlayerListener {
 	private final HashMap<Player, Character> colorLocks = new HashMap<Player, Character>();
     private final colors plugin;
     private Names PSnames;
-	@SuppressWarnings("unused")
+	//@SuppressWarnings("unused")
 	private String pluginname;
 	private String dcc; //the default color char (&)
 	private String regcc; //all color chars
@@ -30,8 +30,14 @@ public class colorsPListener extends PlayerListener {
     }
     
     public void plugin_init(){
-    	dcc = plugin.colorSettings.getProperty("color-chars").split(",")[0];
-        regcc = "[" +plugin.colorSettings.getProperty("color-chars").split(",") + "]";
+    	String[] colorchars = plugin.colorSettings.getProperty("color-chars").split(",");
+    	dcc = colorchars[0];
+    	regcc = "[\\Q";
+    	for(int i = 0; i < colorchars.length; i++){
+    		regcc += colorchars[i];
+    	}
+    	regcc += "\\E]";
+        System.out.println("[" + pluginname + "] " + regcc);
     }
     
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
@@ -424,6 +430,10 @@ public class colorsPListener extends PlayerListener {
     }
     
     private void resetIxes(Player player){
+    	if(!player.isOnline()){
+    		return;
+    	}
+    	
     	String playername = player.getName();
     	String prefix = "";
     	String suffix = "";
@@ -473,7 +483,7 @@ public class colorsPListener extends PlayerListener {
     	
     	if(plugin.permissionsExists || plugin.useSuperperms){
     		colorPerms = plugin.hasPermission(player, "colors.hex") || player.isOp();
-    		rainbowPerms = (plugin.hasPermission(player, "colors.hex") || player.isOp()) && rainbowEnabled;
+    		rainbowPerms = (plugin.hasPermission(player, "colors.rainbow") || player.isOp()) && rainbowEnabled;
     	} else {
     		colorPerms = true;
     		rainbowPerms = player.isOp() && rainbowEnabled;

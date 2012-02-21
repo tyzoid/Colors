@@ -15,6 +15,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.event.Event.Priority;
 
+import tk.tyzoid.plugins.lib.settings;
+import tk.tyzoid.plugins.listeners.colorsPListener;
+
 
 /**
  * Message plugin for Bukkit
@@ -22,7 +25,7 @@ import org.bukkit.event.Event.Priority;
  * @author tyzoid
  */
 public class colors extends JavaPlugin {
-	String pluginname = "colors";
+	public String pluginname = "colors";
 
     public settings colorSettings = new settings();
     private final colorsPListener playerListener = new colorsPListener(this);

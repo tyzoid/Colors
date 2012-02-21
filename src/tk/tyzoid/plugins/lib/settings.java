@@ -1,4 +1,4 @@
-package tk.tyzoid.plugins.colors;
+package tk.tyzoid.plugins.lib;
 
 import java.io.File;
 import java.io.FileInputStream;
