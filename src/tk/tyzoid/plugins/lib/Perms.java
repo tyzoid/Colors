@@ -1,5 +1,7 @@
 package tk.tyzoid.plugins.lib;
 
+import tk.tyzoid.plugins.colors.colors;
+
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
@@ -14,8 +16,8 @@ import de.bananaco.bpermissions.api.WorldManager;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
+//permissionsEx
 import ru.tehkode.permissions.bukkit.PermissionsEx;
-import tk.tyzoid.plugins.colors.colors;
 
 @SuppressWarnings("unused")
 public class Perms {
@@ -28,7 +30,7 @@ public class Perms {
 
     public boolean permissions = false;
     public boolean permissionsEx = false;
-    public boolean bpermissions = false;
+    public boolean bPermissions = false;
     public boolean superperms = false;
     
 	public Perms(colors instance){
@@ -40,11 +42,26 @@ public class Perms {
 	private void setupPermissions() {
         Plugin permissionsPlugin = plugin.getServer().getPluginManager().getPlugin("Permissions");
         Plugin permissionsExPlugin = plugin.getServer().getPluginManager().getPlugin("PermissionsEx");
+        Plugin bPermissionsPlugin = plugin.getServer().getPluginManager().getPlugin("bPermissions");
         
         if(loadPermissions(permissionsPlugin)){
         	System.out.println("[" + "pluginname" + "] Using Permissions for permissions.");
+        	permissions = true;
         } else if(loadPermissionsEx(permissionsExPlugin)){
         	System.out.println("[" + "pluginname" + "] Using PermissionsEX for permissions.");
+        	permissionsEx = true;
+        } else if(loadBPermissions(bPermissionsPlugin)){
+        	System.out.println("[" + "pluginname" + "] Using bPermissions for permissions.");
+        	bPermissions = true;
+        } else {
+        	
+        }
+        
+        try{
+			Permission fakePerm = new Permission("fake.perm");
+        	superperms = true;
+        } catch(Exception e){
+        	//superperms doesn't exist. Is the user in the stone age?
         }
     }
 	
@@ -67,6 +84,18 @@ public class Perms {
             	permissionsExHandler = (PermissionsEx) permPlugin;
             }
         }
+		return exists;
+	}
+	
+	private boolean loadBPermissions(Plugin permPlugin){
+		boolean exists = false;
+		if(bPermissionsHandler == null){
+			if(permPlugin != null){
+				bPermissionsHandler = WorldManager.getInstance();
+				exists = true;
+			}
+		}
+		
 		return exists;
 	}
 	
@@ -95,12 +124,17 @@ public class Perms {
     		groups = permissionHandler.getGroups(player.getWorld().getName(), playerName);
     	}else if(permissionsEx){
     		groups = PermissionsEx.getPermissionManager().getUser(playerName).getGroupsNames();
-    	} else if(bpermissions) {
-    		
+    	} else if(bPermissions) {
+    		World w = bPermissionsHandler.getWorld(player.getWorld().getName());
+    		if (w == null) {
+    			return null;
+    		}
+    		User user = w.getUser(player.getName());
+    		groups = (user != null)? user.getGroupsAsString().toArray(new String[0]) : null;
     	} else {
-    		
+    		groups = null;
     	}
     	
-    	return "";
+    	return (groups != null && groups.length > 1)? groups[0] : ((player.isOp())? "Op" : "Default");
     }
 }
