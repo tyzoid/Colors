@@ -2,19 +2,15 @@ package tk.tyzoid.plugins.colors;
 
 import java.util.HashMap;
 
-//permissions
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-import org.bukkit.permissions.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.event.Event.Priority;
 
+import tk.tyzoid.plugins.lib.Perms;
 import tk.tyzoid.plugins.lib.settings;
 import tk.tyzoid.plugins.listeners.colorsPListener;
 
@@ -25,14 +21,15 @@ import tk.tyzoid.plugins.listeners.colorsPListener;
  * @author tyzoid
  */
 public class colors extends JavaPlugin {
-	public String pluginname = "colors";
+	public String pluginname = "Colors";
 
     public settings colorSettings = new settings();
     private final colorsPListener playerListener = new colorsPListener(this);
     private final HashMap<Player, Boolean> colorify = new HashMap<Player, Boolean>();
-    public PermissionHandler permissionHandler;
-    public boolean permissionsExists = false;
-    public boolean useSuperperms = false;
+    public Perms permissionHandler;
+    //public PermissionHandler permissionHandler;
+    //public boolean permissionsExists = false;
+    //public boolean useSuperperms = false;
 
     public void onDisable() {
         System.out.println("[" + pluginname +"] " + pluginname + " is closing...");
@@ -49,12 +46,22 @@ public class colors extends JavaPlugin {
         
         PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println("[" + pluginname + "] Starting " + pluginname + " v" + pdfFile.getVersion() + "...");
+        
         setupPermissions();
+        
         colorSettings.readSettings();
         playerListener.plugin_init();
     }
     
-    private void setupPermissions() {
+    private void setupPermissions(){
+    	permissionHandler = new Perms(this);
+    }
+    
+    public boolean hasPermission(Player p, String node, boolean defaultValue){
+    	return permissionHandler.hasPermission(p, node, defaultValue);
+    }
+    
+    /*private void setupPermissions() {
         Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
         
         if (permissionHandler == null) {
@@ -75,7 +82,7 @@ public class colors extends JavaPlugin {
                 }
             }
         }
-    }
+    } */
     
     /* Valid nodes:
      * colors.*
@@ -85,13 +92,13 @@ public class colors extends JavaPlugin {
      * colors.rainbow
      * colors.admin
      */
-    public boolean hasPermission(Player p, String node){
+    /*public boolean hasPermission(Player p, String node){
     	if(!useSuperperms){
     		return permissionHandler.has(p, node);
     	} else {
     		return p.hasPermission(node);
     	}
-    }
+    }*/
     
     public boolean isChatColoring(final Player player) {
         if (colorify.containsKey(player)) {

@@ -26,7 +26,7 @@ public class Perms {
     private WorldManager bPermissionsHandler;
     private PermissionsEx permissionsExHandler;
     
-    public String pluginname;
+    private String pluginname;
 
     public boolean permissions = false;
     public boolean permissionsEx = false;
@@ -45,16 +45,16 @@ public class Perms {
         Plugin bPermissionsPlugin = plugin.getServer().getPluginManager().getPlugin("bPermissions");
         
         if(loadPermissions(permissionsPlugin)){
-        	System.out.println("[" + "pluginname" + "] Using Permissions for permissions.");
+        	System.out.println("[" + pluginname + "] Hooked into Permissions.");
         	permissions = true;
         } else if(loadPermissionsEx(permissionsExPlugin)){
-        	System.out.println("[" + "pluginname" + "] Using PermissionsEX for permissions.");
+        	System.out.println("[" + pluginname + "] Hooked into PermissionsEX.");
         	permissionsEx = true;
         } else if(loadBPermissions(bPermissionsPlugin)){
-        	System.out.println("[" + "pluginname" + "] Using bPermissions for permissions.");
+        	System.out.println("[" + pluginname + "] Hooked into bPermissions.");
         	bPermissions = true;
         } else {
-        	
+        	System.out.println("[" + pluginname + "] No groups plugin found that " + pluginname + " supports. Using default groups.");
         }
         
         try{
@@ -76,7 +76,7 @@ public class Perms {
 		return exists;
 	}
 	
-	public boolean loadPermissionsEx(Plugin permPlugin){
+	private boolean loadPermissionsEx(Plugin permPlugin){
 		boolean exists = false;
 		if (permissionsExHandler == null) {
             if (permPlugin != null) {
@@ -117,7 +117,7 @@ public class Perms {
     	}
     }
     
-    public String getGroup(Player player){
+    public String[] getGroups(Player player){
     	String playerName = player.getName();
     	String[] groups;
     	if(permissions){
@@ -135,6 +135,11 @@ public class Perms {
     		groups = null;
     	}
     	
+    	return groups;
+    }
+    
+    public String getGroup(Player player){
+    	String[] groups = getGroups(player);
     	return (groups != null && groups.length > 1)? groups[0] : ((player.isOp())? "Op" : "Default");
     }
 }

@@ -16,9 +16,8 @@ public class colorsPListener extends PlayerListener {
 	private final HashMap<Player, Character> colorLocks = new HashMap<Player, Character>();
     private final colors plugin;
     private Names PSnames;
-	//@SuppressWarnings("unused")
 	private String pluginname;
-	private String dcc; //the default color char (&)
+	private String dcc; //the default color char - usually "&"
 	private String regcc; //all color chars
 
     public colorsPListener(colors instance) {
@@ -49,43 +48,25 @@ public class colorsPListener extends PlayerListener {
 		String[] rainbowCommands = plugin.colorSettings.getProperty("commands").split(",");
 		boolean useColors = plugin.colorSettings.getProperty("use-rainbow").equalsIgnoreCase("true");
 		boolean rainbowCommandUsed = false;
-		if(plugin.permissionsExists || plugin.useSuperperms){
-			if(plugin.hasPermission(player, "colors.rainbow") || player.isOp()){
-				for(int i = 0; (i < rainbowCommands.length && !rainbowCommandUsed) && useColors; i++){
-					if(split[0].equalsIgnoreCase(rainbowCommands[i])){
-						rainbowCommandUsed = true;
-					}
-				}
-			} else {
-				boolean usedCommand = false;
-				for(int i = 0; (i < rainbowCommands.length && !usedCommand) && useColors; i++){
-					if(split[0].equalsIgnoreCase(rainbowCommands[i])){
-						usedCommand = true;
-					}
-				}
-				if(usedCommand){
-					player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §cYou do not have permissions to use that command.");
+		
+		if(plugin.hasPermission(player, "colors.rainbow", player.isOp()) || player.isOp()){
+			for(int i = 0; (i < rainbowCommands.length && !rainbowCommandUsed) && useColors; i++){
+				if(split[0].equalsIgnoreCase(rainbowCommands[i])){
+					rainbowCommandUsed = true;
 				}
 			}
 		} else {
-			if(player.isOp()){
-				for(int i = 0; (i < rainbowCommands.length && !rainbowCommandUsed) && useColors; i++){
-					if(split[0].equalsIgnoreCase(rainbowCommands[i])){
-						rainbowCommandUsed = true;
-					}
-				}
-			} else {
-				boolean usedCommand = false;
-				for(int i = 0; (i < rainbowCommands.length && !usedCommand) && useColors; i++){
-					if(split[0].equalsIgnoreCase(rainbowCommands[i])){
-						usedCommand = true;
-					}
-				}
-				if(usedCommand){
-					player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §cYou do not have permissions to use that command.");
+			boolean usedCommand = false;
+			for(int i = 0; (i < rainbowCommands.length && !usedCommand) && useColors; i++){
+				if(split[0].equalsIgnoreCase(rainbowCommands[i])){
+					usedCommand = true;
 				}
 			}
+			if(usedCommand){
+				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §cYou do not have permissions to use that command.");
+			}
 		}
+		
 		if (rainbowCommandUsed) {
 			if(split.length > 1){
 				String message = "";
@@ -108,20 +89,10 @@ public class colorsPListener extends PlayerListener {
 		String[] adminCommands = plugin.colorSettings.getProperty("admin-commands").split(",");
 		boolean adminCommandUsed = false;
 		boolean useAdminCommands = plugin.colorSettings.getProperty("use-admin").equalsIgnoreCase("true");
-		if(plugin.permissionsExists || plugin.useSuperperms){
-			if(plugin.hasPermission(player, "colors.admin") || player.isOp()){
-				for(int i = 0; (i < adminCommands.length && !adminCommandUsed) && useAdminCommands; i++){
-					if(split[0].equalsIgnoreCase(adminCommands[i])){
-						adminCommandUsed = true;
-					}
-				}
-			}
-		} else {
-			if(player.isOp()){
-				for(int i = 0; (i < adminCommands.length && !adminCommandUsed) && useAdminCommands; i++){
-					if(split[0].equalsIgnoreCase(adminCommands[i])){
-						adminCommandUsed = true;
-					}
+		if(plugin.hasPermission(player, "colors.admin", player.isOp()) || player.isOp()){
+			for(int i = 0; (i < adminCommands.length && !adminCommandUsed) && useAdminCommands; i++){
+				if(split[0].equalsIgnoreCase(adminCommands[i])){
+					adminCommandUsed = true;
 				}
 			}
 		}
@@ -251,22 +222,11 @@ public class colorsPListener extends PlayerListener {
 		String[] prefixCommands = plugin.colorSettings.getProperty("prefix-commands").split(",");
 		boolean prefixCommandUsed = false;
 		boolean rainbowPermissions = false;
-		if(plugin.permissionsExists || plugin.useSuperperms){
-			rainbowPermissions = plugin.hasPermission(player, "colors.rainbow") || player.isOp();
-			if(plugin.hasPermission(player, "colors.prefix") || player.isOp()){
-				for(int i = 0; (i < prefixCommands.length && !prefixCommandUsed); i++){
-					if(split[0].equalsIgnoreCase(prefixCommands[i])){
-						prefixCommandUsed = true;
-					}
-				}
-			}
-		} else {
-			if(player.isOp()){
-				rainbowPermissions = true;
-				for(int i = 0; (i < prefixCommands.length && !prefixCommandUsed); i++){
-					if(split[0].equalsIgnoreCase(prefixCommands[i])){
-						prefixCommandUsed = true;
-					}
+		rainbowPermissions = plugin.hasPermission(player, "colors.rainbow", player.isOp()) || player.isOp();
+		if(plugin.hasPermission(player, "colors.prefix", true) || player.isOp()){
+			for(int i = 0; (i < prefixCommands.length && !prefixCommandUsed); i++){
+				if(split[0].equalsIgnoreCase(prefixCommands[i])){
+					prefixCommandUsed = true;
 				}
 			}
 		}
@@ -295,24 +255,14 @@ public class colorsPListener extends PlayerListener {
 		boolean suffixCommandUsed = false;
 		//boolean rainbowPermissions = false; **Declared and evaluated in /prefix**
 		
-		if(plugin.permissionsExists || plugin.useSuperperms){
-			if(plugin.hasPermission(player, "colors.suffix") || player.isOp()){
-				for(int i = 0; (i < suffixCommands.length && !suffixCommandUsed); i++){
-					if(split[0].equalsIgnoreCase(suffixCommands[i])){
-						suffixCommandUsed = true;
-					}
-				}
-			}
-		} else {
-			if(player.isOp()){
-				for(int i = 0; (i < suffixCommands.length && !suffixCommandUsed); i++){
-					if(split[0].equalsIgnoreCase(suffixCommands[i])){
-						suffixCommandUsed = true;
-					}
+		if(plugin.hasPermission(player, "colors.suffix", true) || player.isOp()){
+			for(int i = 0; (i < suffixCommands.length && !suffixCommandUsed); i++){
+				if(split[0].equalsIgnoreCase(suffixCommands[i])){
+					suffixCommandUsed = true;
 				}
 			}
 		}
-		
+				
 		if(suffixCommandUsed){
 			if(split.length == 1){
 				PSnames.setUserSuffix(player.getName(), "");
@@ -337,24 +287,14 @@ public class colorsPListener extends PlayerListener {
 		String[] reloadCommands = plugin.colorSettings.getProperty("reload-commands").split(",");
 		boolean reloadCommandUsed = false;
 		
-		if(plugin.permissionsExists || plugin.useSuperperms){
-			if(plugin.hasPermission(player, "colors.reload") || player.isOp()){
-				for(int i = 0; (i < reloadCommands.length && !reloadCommandUsed); i++){
-					if(split[0].equalsIgnoreCase(reloadCommands[i])){
-						reloadCommandUsed = true;
-					}
-				}
-			}
-		} else {
-			if(player.isOp()){
-				for(int i = 0; (i < reloadCommands.length && !reloadCommandUsed); i++){
-					if(split[0].equalsIgnoreCase(reloadCommands[i])){
-						reloadCommandUsed = true;
-					}
+		if(plugin.hasPermission(player, "colors.reload", player.isOp()) || player.isOp()){
+			for(int i = 0; (i < reloadCommands.length && !reloadCommandUsed); i++){
+				if(split[0].equalsIgnoreCase(reloadCommands[i])){
+					reloadCommandUsed = true;
 				}
 			}
 		}
-		
+				
 		if(reloadCommandUsed){
 			plugin.colorSettings.reloadData();
 			event.setCancelled(true);
@@ -366,23 +306,14 @@ public class colorsPListener extends PlayerListener {
 		String[] colorlockCommands = plugin.colorSettings.getProperty("colorlock-commands").split(",");
 		boolean colorlockCommandUsed = false;
 		
-		if(plugin.permissionsExists || plugin.useSuperperms){
-			if(plugin.hasPermission(player, "colors.colorlock") || player.isOp()){
-				for(int i = 0; (i < colorlockCommands.length && !colorlockCommandUsed); i++){
-					if(split[0].equalsIgnoreCase(colorlockCommands[i])){
-						colorlockCommandUsed = true;
-					}
-				}
-			}
-		} else {
-			if(player.isOp()){
-				for(int i = 0; (i < colorlockCommands.length && !colorlockCommandUsed); i++){
-					if(split[0].equalsIgnoreCase(colorlockCommands[i])){
-						colorlockCommandUsed = true;
-					}
+		if(plugin.hasPermission(player, "colors.colorlock", true) || player.isOp()){
+			for(int i = 0; (i < colorlockCommands.length && !colorlockCommandUsed); i++){
+				if(split[0].equalsIgnoreCase(colorlockCommands[i])){
+					colorlockCommandUsed = true;
 				}
 			}
 		}
+		
 		if(colorlockCommandUsed){
 			//TODO: reference point
 			if(split.length == 2 && split[1].length() == 2){
@@ -462,7 +393,7 @@ public class colorsPListener extends PlayerListener {
     }
     
 	public String getGroup(Player player){
-    	if(plugin.permissionsExists){
+    	/*if(plugin.permissionsExists){
     		String[] groups = plugin.permissionHandler.getGroups(player.getWorld().getName(), player.getName());
     		if(groups.length > 0){
     			return groups[0];
@@ -471,7 +402,9 @@ public class colorsPListener extends PlayerListener {
     		}
     	} else {
     		return (player.isOp()) ? "Op" : "Default";
-    	}
+    	}*/
+		
+		return plugin.permissionHandler.getGroup(player);
     }
     
     public void onPlayerChat(PlayerChatEvent event){
@@ -481,13 +414,9 @@ public class colorsPListener extends PlayerListener {
     	boolean chatFormatting = plugin.colorSettings.getProperty("use-chat-formatting").equalsIgnoreCase("true");
     	Player player = event.getPlayer();
     	
-    	if(plugin.permissionsExists || plugin.useSuperperms){
-    		colorPerms = plugin.hasPermission(player, "colors.hex") || player.isOp();
-    		rainbowPerms = (plugin.hasPermission(player, "colors.rainbow") || player.isOp()) && rainbowEnabled;
-    	} else {
-    		colorPerms = true;
-    		rainbowPerms = player.isOp() && rainbowEnabled;
-    	}
+    	colorPerms = plugin.hasPermission(player, "colors.hex", true) || player.isOp();
+    	rainbowPerms = (plugin.hasPermission(player, "colors.rainbow", player.isOp()) || player.isOp()) && rainbowEnabled;
+    	
     	if(colorPerms){
     		String message = event.getMessage();
 			if(plugin.isChatColoring(player)){

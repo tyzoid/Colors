@@ -1,6 +1,6 @@
 name: Colors
 main: tk.tyzoid.plugins.colors.colors
-version: 2.0.1
+version: 2.0.2
 author: Tyzoid
 permissions:
     colors.*:
