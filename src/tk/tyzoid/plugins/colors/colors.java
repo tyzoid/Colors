@@ -5,10 +5,8 @@ import java.util.HashMap;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.event.Event.Priority;
 
 import tk.tyzoid.plugins.lib.Perms;
 import tk.tyzoid.plugins.lib.settings;
@@ -27,9 +25,6 @@ public class colors extends JavaPlugin {
     private final colorsPListener playerListener = new colorsPListener(this);
     private final HashMap<Player, Boolean> colorify = new HashMap<Player, Boolean>();
     public Perms permissionHandler;
-    //public PermissionHandler permissionHandler;
-    //public boolean permissionsExists = false;
-    //public boolean useSuperperms = false;
 
     public void onDisable() {
         System.out.println("[" + pluginname +"] " + pluginname + " is closing...");
@@ -37,12 +32,14 @@ public class colors extends JavaPlugin {
     }
 
     public void onEnable() {
-        // Register our events
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Highest, this);
-        pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.Highest, this);
-        pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
+        
+        pm.registerEvents(playerListener, this);
+        
+        //pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Highest, this);
+        //pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.Highest, this);
+        //pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
+        //pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
         
         PluginDescriptionFile pdfFile = this.getDescription();
         System.out.println("[" + pluginname + "] Starting " + pluginname + " v" + pdfFile.getVersion() + "...");
@@ -60,45 +57,6 @@ public class colors extends JavaPlugin {
     public boolean hasPermission(Player p, String node, boolean defaultValue){
     	return permissionHandler.hasPermission(p, node, defaultValue);
     }
-    
-    /*private void setupPermissions() {
-        Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
-        
-        if (permissionHandler == null) {
-            if (permissionsPlugin != null) {
-            	permissionsExists = true;
-                permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-                System.out.println("[" + pluginname + "] Permissions found!");
-            } else {
-                System.out.println("[" + pluginname + "] Permissions not detected. Using defaults.");
-                permissionsExists = false;
-                
-                try{
-                	@SuppressWarnings("unused")
-					Permission fakePerm = new Permission("fake.perm");
-                	useSuperperms = true;
-                } catch(Exception e){
-                	//superperms doesn't exist
-                }
-            }
-        }
-    } */
-    
-    /* Valid nodes:
-     * colors.*
-     * colors.prefix
-     * colors.suffix
-     * colors.hex
-     * colors.rainbow
-     * colors.admin
-     */
-    /*public boolean hasPermission(Player p, String node){
-    	if(!useSuperperms){
-    		return permissionHandler.has(p, node);
-    	} else {
-    		return p.hasPermission(node);
-    	}
-    }*/
     
     public boolean isChatColoring(final Player player) {
         if (colorify.containsKey(player)) {

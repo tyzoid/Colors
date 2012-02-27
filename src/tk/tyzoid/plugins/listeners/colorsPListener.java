@@ -5,13 +5,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 
 import tk.tyzoid.plugins.colors.colors;
 import tk.tyzoid.plugins.lib.Names;
 
 
-public class colorsPListener extends PlayerListener {
+public class colorsPListener implements Listener {
 	private final HashMap<Player, String> names = new HashMap<Player, String>();
 	private final HashMap<Player, Character> colorLocks = new HashMap<Player, Character>();
     private final colors plugin;
@@ -39,6 +42,7 @@ public class colorsPListener extends PlayerListener {
         System.out.println("[" + pluginname + "] " + regcc);
     }
     
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
     	String[] split = event.getMessage().split(" ");
     	String mess = event.getMessage();
@@ -353,6 +357,7 @@ public class colorsPListener extends PlayerListener {
     	}
     }
     
+    @EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
     	Player player = event.getPlayer();
     	names.put(player, player.getDisplayName());
@@ -407,6 +412,7 @@ public class colorsPListener extends PlayerListener {
 		return plugin.permissionHandler.getGroup(player);
     }
     
+	@EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(PlayerChatEvent event){
     	boolean colorPerms = false;
     	boolean rainbowPerms = false;
@@ -473,6 +479,7 @@ public class colorsPListener extends PlayerListener {
     	}
     }
     
+	@EventHandler
     public void onPlayerQuit(PlayerQuitEvent event){
     	names.remove(event.getPlayer());
     }
