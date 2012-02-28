@@ -19,6 +19,7 @@ public class colorsPListener implements Listener {
 	private final HashMap<Player, Character> colorLocks = new HashMap<Player, Character>();
     private final colors plugin;
     private Names PSnames;
+	@SuppressWarnings("unused")
 	private String pluginname;
 	private String dcc; //the default color char - usually "&"
 	private String regcc; //all color chars
@@ -39,7 +40,6 @@ public class colorsPListener implements Listener {
     		regcc += colorchars[i];
     	}
     	regcc += "\\E]";
-        System.out.println("[" + pluginname + "] " + regcc);
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -397,18 +397,7 @@ public class colorsPListener implements Listener {
     	}
     }
     
-	public String getGroup(Player player){
-    	/*if(plugin.permissionsExists){
-    		String[] groups = plugin.permissionHandler.getGroups(player.getWorld().getName(), player.getName());
-    		if(groups.length > 0){
-    			return groups[0];
-    		} else {
-    			return (player.isOp()) ? "Op" : "Default";
-    		}
-    	} else {
-    		return (player.isOp()) ? "Op" : "Default";
-    	}*/
-		
+	public String getGroup(Player player){		
 		return plugin.permissionHandler.getGroup(player);
     }
     

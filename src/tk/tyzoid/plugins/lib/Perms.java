@@ -140,6 +140,6 @@ public class Perms {
     
     public String getGroup(Player player){
     	String[] groups = getGroups(player);
-    	return (groups != null && groups.length > 1)? groups[0] : ((player.isOp())? "Op" : "Default");
+    	return (groups != null && groups.length > 0)? groups[0] : ((player.isOp())? "Op" : "Default");
     }
 }
