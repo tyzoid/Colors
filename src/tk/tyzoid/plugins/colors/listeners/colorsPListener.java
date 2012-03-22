@@ -1,4 +1,4 @@
-package tk.tyzoid.plugins.listeners;
+package tk.tyzoid.plugins.colors.listeners;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 
 import tk.tyzoid.plugins.colors.colors;
-import tk.tyzoid.plugins.lib.Names;
+import tk.tyzoid.plugins.colors.lib.Names;
 
 
 public class colorsPListener implements Listener {
@@ -403,6 +403,9 @@ public class colorsPListener implements Listener {
     
 	@EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(PlayerChatEvent event){
+		if(event.isCancelled()){
+			return;
+		}
     	boolean colorPerms = false;
     	boolean rainbowPerms = false;
     	boolean rainbowEnabled = plugin.colorSettings.getProperty("use-rainbow").equalsIgnoreCase("true");
@@ -448,13 +451,13 @@ public class colorsPListener implements Listener {
 				
 				if(pend < start){
 					finalMessage += format.substring(pend, start);
-					/* Debug message */ /* Delete this to comment out -->
+					/* Debug message */ /* Delete this to comment out --> 
 					System.out.println("[" + pluginname + "] (1) Player: " + player.getDisplayName() + ", Text: " + format.substring(pend, start));
 					/* End debug message */
 				}
 				
 				finalMessage += getNameProperty(format.substring(start+1, end-1), player, event.getMessage());
-				/* Debug message */ /* Delete this to comment out -->
+				/* Debug message */ /* Delete this to comment out --> 
 				String dbpmessage = getNameProperty(format.substring(start+1, end-1), player, event.getMessage());
 				System.out.println("[" + pluginname + "] (2) Player: " + player.getDisplayName() + ", Property: " + format.substring(start+1, end-1));
 		    	System.out.println("[" + pluginname + "] (3) Player: " + player.getDisplayName() + ", Property: " + dbpmessage);
@@ -465,6 +468,10 @@ public class colorsPListener implements Listener {
 			
 			event.setCancelled(true);
 			plugin.getServer().broadcastMessage(plugin.convertToColor(finalMessage, rainbowEnabled));
+			
+			/* Debug message */ /* Delete this to comment out --> 
+			System.out.println("[" + pluginname + " (4) Message: " + plugin.convertToColor(finalMessage, rainbowEnabled));
+			/*End debug message*/
     	}
     }
     

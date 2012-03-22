@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 
-import tk.tyzoid.plugins.lib.Perms;
-import tk.tyzoid.plugins.lib.settings;
-import tk.tyzoid.plugins.listeners.colorsPListener;
+import tk.tyzoid.plugins.colors.lib.Perms;
+import tk.tyzoid.plugins.colors.lib.settings;
+import tk.tyzoid.plugins.colors.listeners.colorsPListener;
 
 
 /**
@@ -81,6 +81,10 @@ public class colors extends JavaPlugin {
     	String finalMessage ="";
     	int color = 1;
     	for(int i = 0; i < charMessage.length; i++){
+    		if((i-1) < charMessage.length && charMessage[i] == '§' && isColorNumber(charMessage[i+1])){
+    			i++;
+    			continue;
+    		}
     		finalMessage += "§" + Integer.toHexString(color);
     		finalMessage += charMessage[i];
     		color++;
@@ -143,6 +147,6 @@ public class colors extends JavaPlugin {
     
     public boolean isColorNumber(char c){
     	c = Character.toLowerCase(c);
-    	return ((c == '0') || (c == '1') || (c == '2') || (c == '3') || (c == '4') || (c == '5') || (c == '6') || (c == '7') || (c == '8') || (c == '9') || (c == 'a') || (c == 'b') || (c == 'c') || (c == 'd') || (c == 'e') || (c == 'f'));
+    	return ((c == '0') || (c == '1') || (c == '2') || (c == '3') || (c == '4') || (c == '5') || (c == '6') || (c == '7') || (c == '8') || (c == '9') || (c == 'a') || (c == 'b') || (c == 'c') || (c == 'd') || (c == 'e') || (c == 'f') || (c == 'k'));
     }
 }

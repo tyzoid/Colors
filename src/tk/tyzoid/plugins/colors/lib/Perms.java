@@ -1,4 +1,4 @@
-package tk.tyzoid.plugins.lib;
+package tk.tyzoid.plugins.colors.lib;
 
 import tk.tyzoid.plugins.colors.colors;
 
