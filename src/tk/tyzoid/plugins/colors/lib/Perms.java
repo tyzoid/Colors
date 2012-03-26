@@ -1,7 +1,9 @@
 package tk.tyzoid.plugins.colors.lib;
 
-import tk.tyzoid.plugins.colors.colors;
+import tk.tyzoid.plugins.colors.Colors;
 
+import org.anjocaido.groupmanager.GroupManager;
+import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
@@ -21,19 +23,21 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 @SuppressWarnings("unused")
 public class Perms {
-	colors plugin;
+	Colors plugin;
     private PermissionHandler permissionHandler;
     private WorldManager bPermissionsHandler;
     private PermissionsEx permissionsExHandler;
+    private GroupManager groupManagerHandler;
     
     private String pluginname;
-
-    public boolean permissions = false;
-    public boolean permissionsEx = false;
-    public boolean bPermissions = false;
-    public boolean superperms = false;
     
-	public Perms(colors instance){
+    private boolean permissions = false;
+    private boolean permissionsEx = false;
+    private boolean bPermissions = false;
+    private boolean groupManager = false;
+    private boolean superperms = false;
+    
+	public Perms(Colors instance){
 		plugin = instance;
 		pluginname = plugin.pluginname;
 		setupPermissions();
@@ -43,6 +47,7 @@ public class Perms {
         Plugin permissionsPlugin = plugin.getServer().getPluginManager().getPlugin("Permissions");
         Plugin permissionsExPlugin = plugin.getServer().getPluginManager().getPlugin("PermissionsEx");
         Plugin bPermissionsPlugin = plugin.getServer().getPluginManager().getPlugin("bPermissions");
+        Plugin groupManagerPlugin = plugin.getServer().getPluginManager().getPlugin("GroupManager");
         
         if(loadPermissions(permissionsPlugin)){
         	System.out.println("[" + pluginname + "] Hooked into Permissions.");
@@ -53,8 +58,11 @@ public class Perms {
         } else if(loadBPermissions(bPermissionsPlugin)){
         	System.out.println("[" + pluginname + "] Hooked into bPermissions.");
         	bPermissions = true;
+        } else if(loadGroupManager(groupManagerPlugin)){
+        	System.out.println("[" + pluginname + "] Hooked into GroupManager.");
+        	groupManager = true;
         } else {
-        	System.out.println("[" + pluginname + "] No groups plugin found that " + pluginname + " supports. Using default groups.");
+        	System.out.println("[" + pluginname + "] No group/permissions plugin found that " + pluginname + " supports. Using default groups.");
         }
         
         try{
@@ -99,6 +107,18 @@ public class Perms {
 		return exists;
 	}
 	
+	private boolean loadGroupManager(Plugin permPlugin){
+		boolean exists = false;
+		if(groupManagerHandler == null){
+			if(permPlugin != null){
+				groupManagerHandler = (GroupManager) permPlugin;
+				exists = true;
+			}
+		}
+		
+		return exists;
+	}
+	
 	/* Valid nodes:
      * colors.*
      * colors.prefix
@@ -131,6 +151,10 @@ public class Perms {
     		}
     		User user = w.getUser(player.getName());
     		groups = (user != null)? user.getGroupsAsString().toArray(new String[0]) : null;
+    	} else if(groupManager){
+    		AnjoPermissionsHandler handler;
+    		handler = groupManagerHandler.getWorldsHolder().getWorldPermissions(player);
+    		groups = handler.getGroups(playerName);
     	} else {
     		groups = null;
     	}

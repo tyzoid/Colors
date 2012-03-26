@@ -5,12 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
-import tk.tyzoid.plugins.colors.colors;
+import tk.tyzoid.plugins.colors.Colors;
 
 //import org.bukkit.entity.Player;
 
 public class Names {
-	colors plugin;
+	Colors plugin;
 	
 	private Properties user = new Properties();
 	private Properties group = new Properties();
@@ -24,7 +24,7 @@ public class Names {
 	private FileOutputStream playerOut;
 	private FileOutputStream groupOut;
 	
-	public Names(colors instance){
+	public Names(Colors instance){
 		plugin = instance;
 		
 		pluginname = plugin.pluginname;
@@ -149,7 +149,8 @@ public class Names {
 	}
 	
 	public void pluginClosing(boolean show){
-		if(show){System.out.println("[" + pluginname + "] Saving prefix/suffix data.");}
+		if(show)
+			System.out.println("[" + pluginname + "] Saving prefix/suffix data.");
 		try{
 			playerOut = new FileOutputStream(players);
 			groupOut = new FileOutputStream(groups);
@@ -160,10 +161,8 @@ public class Names {
 			playerOut.close();
 			groupOut.close();
 		} catch(Exception e){
-			if(show){
-				System.out.println("[" + pluginname + "] Could not save prefix/suffix data.");
-				System.out.println("[" + pluginname + "] Error: " + e.toString());
-			}
+			System.out.println("[" + pluginname + "] Could not save prefix/suffix data.");
+			System.out.println("[" + pluginname + "] Error: " + e.toString());
 		}
 	}
 	

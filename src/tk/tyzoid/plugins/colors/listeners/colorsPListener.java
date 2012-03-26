@@ -10,26 +10,21 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 
-import tk.tyzoid.plugins.colors.colors;
-import tk.tyzoid.plugins.colors.lib.Names;
+import tk.tyzoid.plugins.colors.Colors;
 
 
 public class colorsPListener implements Listener {
 	private final HashMap<Player, String> names = new HashMap<Player, String>();
 	private final HashMap<Player, Character> colorLocks = new HashMap<Player, Character>();
-    private final colors plugin;
-    private Names PSnames;
+    private final Colors plugin;
 	@SuppressWarnings("unused")
 	private String pluginname;
 	private String dcc; //the default color char - usually "&"
 	private String regcc; //all color chars
 
-    public colorsPListener(colors instance) {
+    public colorsPListener(Colors instance) {
         plugin = instance;
         pluginname = plugin.pluginname;
-        
-        PSnames = new Names(plugin);
-        PSnames.loadNames();
     }
     
     public void plugin_init(){
@@ -110,13 +105,13 @@ public class colorsPListener implements Listener {
 						if(split[3].equalsIgnoreCase("p:") && split.length > 5){
 							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
 							String PSset = mess.substring(start, mess.length());
-							PSnames.setUserPrefix(split[4], PSset);
+							plugin.PSnames.setUserPrefix(split[4], PSset);
 							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aUser prefix has been set.");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 5){
 							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
 							String PSset = mess.substring(start, mess.length());
-							PSnames.setGroupPrefix(split[4], PSset);
+							plugin.PSnames.setGroupPrefix(split[4], PSset);
 							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aGroup prefix has been set.");
 							
 							Object[] str = names.values().toArray();
@@ -132,13 +127,13 @@ public class colorsPListener implements Listener {
 						if(split[3].equalsIgnoreCase("p:") && split.length > 5){
 							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
 							String PSset = mess.substring(start, mess.length());
-							PSnames.setUserSuffix(split[4], PSset);
+							plugin.PSnames.setUserSuffix(split[4], PSset);
 							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aUser suffix has been set.");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 5){
 							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
 							String PSset = mess.substring(start, mess.length());
-							PSnames.setGroupSuffix(split[4], PSset);
+							plugin.PSnames.setGroupSuffix(split[4], PSset);
 							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aGroup suffix has been set.");
 							
 							Object[] str = names.values().toArray();
@@ -156,17 +151,17 @@ public class colorsPListener implements Listener {
 				} else if(split[1].equalsIgnoreCase("get") && split.length > 2){
 					if(split[2].equalsIgnoreCase("prefix") && split.length > 3){
 						if(split[3].equalsIgnoreCase("p:") && split.length > 4){
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s prefix is: " + PSnames.getUserPrefix(split[4]));
+							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s prefix is: " + plugin.PSnames.getUserPrefix(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 4){
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] The group " + split[4] + " has the prefix: " + PSnames.getGroupSuffix(getGroup(plugin.getServer().getPlayer(split[4]))));
+							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] The group " + split[4] + " has the prefix: " + plugin.PSnames.getGroupSuffix(getGroup(plugin.getServer().getPlayer(split[4]))));
 						} else {
 							showHelpMenu(player);
 						}
 					} else if(split[2].equalsIgnoreCase("suffix") && split.length > 3){
 						if(split[3].equalsIgnoreCase("p:") && split.length > 4){
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s suffix is: " + PSnames.getUserSuffix(split[4]));
+							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s suffix is: " + plugin.PSnames.getUserSuffix(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 4){
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s suffix is: " + PSnames.getGroupSuffix(getGroup(plugin.getServer().getPlayer(split[4]))));
+							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s suffix is: " + plugin.PSnames.getGroupSuffix(getGroup(plugin.getServer().getPlayer(split[4]))));
 						} else {
 							showHelpMenu(player);
 						}
@@ -177,11 +172,11 @@ public class colorsPListener implements Listener {
 					if(split[2].equalsIgnoreCase("prefix") && split.length > 3){
 						if(split[3].equalsIgnoreCase("p:") && split.length > 4){
 							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s prefix is removed.");
-							PSnames.setUserPrefix(split[4], "");
+							plugin.PSnames.setUserPrefix(split[4], "");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 4){
 							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] The group " + split[4] + "'s prefix is removed.");
-							PSnames.setGroupPrefix(split[4], "");
+							plugin.PSnames.setGroupPrefix(split[4], "");
 							
 							Object[] str = names.values().toArray();
 							for(int i = 0; i < names.size(); i++){
@@ -195,11 +190,11 @@ public class colorsPListener implements Listener {
 					} else if(split[2].equalsIgnoreCase("suffix") && split.length > 3){
 						if(split[3].equalsIgnoreCase("p:") && split.length > 4){
 							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s suffix is removed.");
-							PSnames.setUserSuffix(split[4], "");
+							plugin.PSnames.setUserSuffix(split[4], "");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 4){
 							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] The group " + split[4] + "'s prefix is removed.");
-							PSnames.setGroupSuffix(split[4], "");
+							plugin.PSnames.setGroupSuffix(split[4], "");
 							
 							Object[] str = names.values().toArray();
 							for(int i = 0; i < names.size(); i++){
@@ -237,7 +232,7 @@ public class colorsPListener implements Listener {
 		
 		if(prefixCommandUsed){
 			if(split.length == 1){
-				PSnames.setUserPrefix(player.getName(), "");
+				plugin.PSnames.setUserPrefix(player.getName(), "");
 				resetIxes(player);
 				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour user prefix has been reset.");
 			} else {
@@ -247,7 +242,7 @@ public class colorsPListener implements Listener {
 					PSset.replaceAll(regcc + "[Rr]", "");
 				}
 				
-				PSnames.setUserPrefix(player.getName(), PSset);
+				plugin.PSnames.setUserPrefix(player.getName(), PSset);
 				resetIxes(player);
 				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour user prefix has been set.");
 			}
@@ -269,7 +264,7 @@ public class colorsPListener implements Listener {
 				
 		if(suffixCommandUsed){
 			if(split.length == 1){
-				PSnames.setUserSuffix(player.getName(), "");
+				plugin.PSnames.setUserSuffix(player.getName(), "");
 				resetIxes(player);
 				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour user suffix has been reset.");
 			} else {
@@ -280,7 +275,7 @@ public class colorsPListener implements Listener {
 					PSset.replaceAll(regcc + "[Rr]", "");
 				}
 				
-				PSnames.setUserSuffix(player.getName(), PSset);
+				plugin.PSnames.setUserSuffix(player.getName(), PSset);
 				resetIxes(player);
 				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour user suffix has been set.");
 			}
@@ -375,20 +370,20 @@ public class colorsPListener implements Listener {
     	String suffix = "";
     	String displayName = "";
     	
-    	PSnames.saveData();
-    	PSnames.reloadData();
+    	plugin.PSnames.saveData();
+    	plugin.PSnames.reloadData();
     	
     	if(!plugin.colorSettings.getProperty("use-chat-formatting").equalsIgnoreCase("true")){
     		String group = getGroup(player);
     		
-    		if(PSnames.getGroupPrefix(group) != null){
-    			prefix = (PSnames.getGroupPrefix(group).length() > 0) ? PSnames.getGroupPrefix(group) : prefix;
-    			suffix = (PSnames.getGroupSuffix(group).length() > 0) ? PSnames.getGroupSuffix(group) : suffix;
+    		if(plugin.PSnames.getGroupPrefix(group) != null){
+    			prefix = (plugin.PSnames.getGroupPrefix(group).length() > 0) ? plugin.PSnames.getGroupPrefix(group) : prefix;
+    			suffix = (plugin.PSnames.getGroupSuffix(group).length() > 0) ? plugin.PSnames.getGroupSuffix(group) : suffix;
     		}
     	
-    		if(PSnames.getUserPrefix(playername) != null){
-    			prefix = (PSnames.getUserPrefix(playername).length() > 0) ? PSnames.getUserPrefix(playername) : prefix;
-    			suffix = (PSnames.getUserSuffix(playername).length() > 0) ? PSnames.getUserSuffix(playername) : suffix;
+    		if(plugin.PSnames.getUserPrefix(playername) != null){
+    			prefix = (plugin.PSnames.getUserPrefix(playername).length() > 0) ? plugin.PSnames.getUserPrefix(playername) : prefix;
+    			suffix = (plugin.PSnames.getUserSuffix(playername).length() > 0) ? plugin.PSnames.getUserSuffix(playername) : suffix;
     		}
     		
     		displayName = plugin.convertToColor(prefix + player.getName() + suffix + "§f", true);
@@ -480,8 +475,8 @@ public class colorsPListener implements Listener {
     	names.remove(event.getPlayer());
     }
     
-    public void savePSNames(){
-    	PSnames.pluginClosing(true);
+    public void savePSnames(){
+    	plugin.PSnames.pluginClosing(true);
     }
         
     public String getNameProperty(String propertyName, Player player, String message){
@@ -494,22 +489,22 @@ public class colorsPListener implements Listener {
     	String property = "";
     	
     	if(propertyName.equalsIgnoreCase("prefix")){
-    		if(PSnames.getGroupPrefix(group) != null){
-    			property = (PSnames.getGroupPrefix(group).length() > 0) ? PSnames.getGroupPrefix(group) : property;
+    		if(plugin.PSnames.getGroupPrefix(group) != null){
+    			property = (plugin.PSnames.getGroupPrefix(group).length() > 0) ? plugin.PSnames.getGroupPrefix(group) : property;
     		}
-    		if(PSnames.getUserPrefix(playername) != null){
-    			property = (PSnames.getUserPrefix(playername).length() > 0) ? PSnames.getUserPrefix(playername) : property;
+    		if(plugin.PSnames.getUserPrefix(playername) != null){
+    			property = (plugin.PSnames.getUserPrefix(playername).length() > 0) ? plugin.PSnames.getUserPrefix(playername) : property;
     		}
     		return property;
     	}
     	
     	if(propertyName.equalsIgnoreCase("suffix")){
-    		if(PSnames.getGroupPrefix(group) != null){
-    			property = (PSnames.getGroupSuffix(group).length() > 0) ? PSnames.getGroupSuffix(group) : property;
+    		if(plugin.PSnames.getGroupPrefix(group) != null){
+    			property = (plugin.PSnames.getGroupSuffix(group).length() > 0) ? plugin.PSnames.getGroupSuffix(group) : property;
     		}
     		
-    		if(PSnames.getUserPrefix(playername) != null){
-    			property = (PSnames.getUserSuffix(playername).length() > 0) ? PSnames.getUserSuffix(playername) : property;
+    		if(plugin.PSnames.getUserPrefix(playername) != null){
+    			property = (plugin.PSnames.getUserSuffix(playername).length() > 0) ? plugin.PSnames.getUserSuffix(playername) : property;
     		}
     		return property;
     	}
