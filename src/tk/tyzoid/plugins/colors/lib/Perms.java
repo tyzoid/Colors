@@ -166,4 +166,28 @@ public class Perms {
     	String[] groups = getGroups(player);
     	return (groups != null && groups.length > 0)? groups[0] : ((player.isOp())? "Op" : "Default");
     }
+    
+    public String groupPrefix(Player player){
+    	String prefix;
+    	if(permissions){
+    		prefix = permissionHandler.getGroupPrefix("", "");
+    	} else if(permissionsEx){
+    		prefix = PermissionsEx.getPermissionManager().getGroup(getGroup(player)).getPrefix(player.getWorld().getName());
+    	} else if(bPermissions) {
+    		prefix = null;
+    	} else if(groupManager){
+    		AnjoPermissionsHandler handler;
+    		handler = groupManagerHandler.getWorldsHolder().getWorldPermissions(player.getName());
+    		
+    		if(handler == null)
+    			prefix = null;
+    		else
+    			prefix = handler.getGroupPermissionString(getGroup(player), "prefix");
+    		
+    	} else {
+    		prefix = null;
+    	}
+    	
+    	return prefix;
+    }
 }
