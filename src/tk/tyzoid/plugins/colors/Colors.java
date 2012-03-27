@@ -99,7 +99,7 @@ public class Colors extends JavaPlugin {
     public String convertToColor(String withoutColor, boolean rainbowAllowed){
     	int count = withoutColor.length();
     	char[] colorless = withoutColor.toCharArray();
-    	char rcc = ' '; //rainbow color char
+    	char rcc = 'z'; //rainbow color char
     	String withColor = "";
     	for(int i = 0; i < count; i++){
     		if(isColorChar(colorless[i]) && (i+1) < count){
