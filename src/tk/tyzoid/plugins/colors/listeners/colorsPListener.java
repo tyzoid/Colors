@@ -21,10 +21,14 @@ public class colorsPListener implements Listener {
 	private String pluginname;
 	private String dcc; //the default color char - usually "&"
 	private String regcc; //all color chars
+	private char rcc; //rainbow color char
+	private char crcc; //capitol rainbow color char
 
     public colorsPListener(Colors instance) {
         plugin = instance;
         pluginname = plugin.pluginname;
+        rcc = Character.toLowerCase(plugin.rainbowColor);
+        crcc = Character.toUpperCase(plugin.rainbowColor);
     }
     
     public void plugin_init(){
@@ -239,7 +243,7 @@ public class colorsPListener implements Listener {
 				int start = split[0].length() + 1;
 				String PSset = mess.substring(start, mess.length());
 				if(!rainbowPermissions){
-					PSset.replaceAll(regcc + "[Rr]", "");
+					PSset.replaceAll(regcc + "[" + rcc + crcc + "]", "");
 				}
 				
 				plugin.PSnames.setUserPrefix(player.getName(), PSset);
@@ -272,7 +276,7 @@ public class colorsPListener implements Listener {
 				String PSset = mess.substring(start, mess.length());
 
 				if(!rainbowPermissions){
-					PSset.replaceAll(regcc + "[Rr]", "");
+					PSset.replaceAll(regcc + "[" + rcc + crcc + "]", "");
 				}
 				
 				plugin.PSnames.setUserSuffix(player.getName(), PSset);
@@ -316,7 +320,7 @@ public class colorsPListener implements Listener {
 		if(colorlockCommandUsed){
 			//TODO: reference point
 			if(split.length == 2 && split[1].length() == 2){
-				if(plugin.isColorChar(split[1].toCharArray()[0]) && (plugin.isColorNumber(split[1].toCharArray()[1]) || Character.toLowerCase(split[1].toCharArray()[0]) == 'r')){
+				if(plugin.isColorChar(split[1].toCharArray()[0]) && (plugin.isColorNumber(split[1].toCharArray()[1]) || plugin.isFormattingChar(split[1].toCharArray()[1]) || Character.toLowerCase(split[1].toCharArray()[0]) == 'r')){
 					char colorChar = split[1].toCharArray()[1];
 					colorLocks.put(player, colorChar);
 					player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour specified color has been set.");
@@ -386,7 +390,7 @@ public class colorsPListener implements Listener {
     			suffix = (plugin.PSnames.getUserSuffix(playername).length() > 0) ? plugin.PSnames.getUserSuffix(playername) : suffix;
     		}
     		
-    		displayName = plugin.convertToColor(prefix + player.getName() + suffix + "§f", true);
+    		displayName = plugin.convertToColor(prefix + player.getName() + suffix + "§r", true);
     		player.setDisplayName(displayName);
     		//player.setDisplayName(prefix + names.get(player) + suffix + "§f");
     	}
@@ -414,7 +418,7 @@ public class colorsPListener implements Listener {
     		String message = event.getMessage();
 			if(plugin.isChatColoring(player)){
 				if(chatFormatting){
-					event.setMessage(dcc + "r" + message);
+					event.setMessage(dcc + rcc + message);
 				} else {
 					event.setMessage(plugin.colorsChat(message));
 				}
@@ -431,7 +435,7 @@ public class colorsPListener implements Listener {
     	if(chatFormatting){
     		if(!rainbowPerms){
     			String message = event.getMessage();
-    			message.replaceAll(regcc + "[Rr]", "");
+    			message.replaceAll(regcc + "[" + rcc + crcc + "]", "");
     			event.setMessage(message);
     		}
     		String format = plugin.colorSettings.getProperty("chat-formatting");

@@ -21,6 +21,7 @@ import tk.tyzoid.plugins.colors.listeners.colorsPListener;
  */
 public class Colors extends JavaPlugin {
 	public String pluginname = "Colors";
+	public char rainbowColor = 'z';
 	
     public settings colorSettings = new settings();
     private final colorsPListener playerListener = new colorsPListener(this);
@@ -99,10 +100,10 @@ public class Colors extends JavaPlugin {
     public String convertToColor(String withoutColor, boolean rainbowAllowed){
     	int count = withoutColor.length();
     	char[] colorless = withoutColor.toCharArray();
-    	char rcc = 'z'; //rainbow color char
+    	char rcc = Character.toLowerCase(rainbowColor); //rainbow color char
     	String withColor = "";
     	for(int i = 0; i < count; i++){
-    		if(isColorChar(colorless[i]) && (i+1) < count){
+    		if((isColorChar(colorless[i]) || isFormattingChar(colorless[i])) && (i+1) < count){
     			if(isColorNumber(colorless[i+1])){
     				withColor += "§";
     			} else if(rainbowAllowed && Character.toLowerCase(colorless[i+1]) == rcc){
@@ -147,6 +148,11 @@ public class Colors extends JavaPlugin {
     
     public boolean isColorNumber(char c){
     	c = Character.toLowerCase(c);
-    	return ((c == '0') || (c == '1') || (c == '2') || (c == '3') || (c == '4') || (c == '5') || (c == '6') || (c == '7') || (c == '8') || (c == '9') || (c == 'a') || (c == 'b') || (c == 'c') || (c == 'd') || (c == 'e') || (c == 'f') || (c == 'k') || (c == 'l') || (c == 'm') || (c == 'n') || (c == 'o') || (c == 'r'));
+    	return ((c == '0') || (c == '1') || (c == '2') || (c == '3') || (c == '4') || (c == '5') || (c == '6') || (c == '7') || (c == '8') || (c == '9') || (c == 'a') || (c == 'b') || (c == 'c') || (c == 'd') || (c == 'e') || (c == 'f'));
+    }
+    
+    public boolean isFormattingChar(char c){
+    	c = Character.toLowerCase(c);
+    	return ((c == 'k') || (c == 'l') || (c == 'm') || (c == 'n') || (c == 'o') || (c == 'r'));
     }
 }
