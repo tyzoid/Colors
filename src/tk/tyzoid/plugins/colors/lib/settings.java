@@ -13,6 +13,7 @@ public class settings {
 	
 	private final HashMap<String, String> settingsHolder = new HashMap<String, String>();
 	private String pluginname = "Colors";
+	private boolean installing = false;
 	
 	public void readSettings(){
 		try{
@@ -21,12 +22,14 @@ public class settings {
     		if(!propertiesFile.exists()){
     			(new File(path)).mkdir();
     			propertiesFile.createNewFile();
+    			System.out.println("[" + pluginname + "] Installing...");
+    			installing = true;
     		}
 		    
 			FileInputStream propertiesStream = new FileInputStream(propertiesFile);
 			
 			props.load(propertiesStream);
-			System.out.println("[" + pluginname + "] Properties loaded.");
+			if(!installing) System.out.println("[" + pluginname + "] Properties loaded.");
 			propertiesStream.close();
 			
 			settingsHolder.put("use-rainbow", loadProperty("use-rainbow", "true"));
@@ -42,19 +45,19 @@ public class settings {
 			settingsHolder.put("colorlock-commands", loadProperty("colorlock-commands", "/cl,/color,/colorlock"));
 			
 			if(!((settingsHolder.get("use-rainbow").equalsIgnoreCase("true")) || (settingsHolder.get("use-rainbow").equalsIgnoreCase("false")))){
-				System.out.println("[" + pluginname + "] Malformed property \"use-rainbow\". Resetting...");
+				if(!installing) System.out.println("[" + pluginname + "] Malformed property \"use-rainbow\". Resetting...");
 				setCProperty("use-rainbow", "true");
 				settingsHolder.put("use-rainbow", "true");
 			}
 			
 			if(!((settingsHolder.get("use-admin").equalsIgnoreCase("true")) || (settingsHolder.get("use-admin").equalsIgnoreCase("false")))){
-				System.out.println("[" + pluginname + "] Malformed property \"use-admin\". Resetting...");
+				if(!installing) System.out.println("[" + pluginname + "] Malformed property \"use-admin\". Resetting...");
 				setCProperty("use-admin", "true");
 				settingsHolder.put("use-admin", "true");
 			}
 			
 			if(!((settingsHolder.get("use-chat-formatting").equalsIgnoreCase("true")) || (settingsHolder.get("use-chat-formatting").equalsIgnoreCase("false")))){
-				System.out.println("[" + pluginname + "] Malformed property \"use-chat-formatting\". Resetting...");
+				if(!installing) System.out.println("[" + pluginname + "] Malformed property \"use-chat-formatting\". Resetting...");
 				setCProperty("use-chat-formatting", "true");
 				settingsHolder.put("use-chat-formatting", "true");
 			}
@@ -68,8 +71,8 @@ public class settings {
 				
 				if(!isValidChatOption(settingsHolder.get("chat-formatting").substring(start+1, end - 1))){
 					notValid = true;
-					System.out.println("[" + pluginname + "] Malformed chat option: " + settingsHolder.get("chat-formatting").substring(start+1, end - 1));
-					System.out.println("[" + pluginname + "] Malformed property \"chat-formatting\". Resetting...");
+					if(!installing) System.out.println("[" + pluginname + "] Malformed chat option: " + settingsHolder.get("chat-formatting").substring(start+1, end - 1));
+					if(!installing) System.out.println("[" + pluginname + "] Malformed property \"chat-formatting\". Resetting...");
 					setCProperty("chat-formatting", "<*prefix**displayname**suffix*> *message*");
 					settingsHolder.put("chat-formatting", "<*prefix**displayname**suffix*> *message*");
 				}
@@ -84,13 +87,14 @@ public class settings {
 				}
 			}
 			if(resetChatIndicators || !exists){
-				System.out.println("[" + pluginname + "] Malformed property \"color-chars\". Resetting...");
+				if(!installing) System.out.println("[" + pluginname + "] Malformed property \"color-chars\". Resetting...");
 				setCProperty("color-chars", "&,^");
 				settingsHolder.put("color-chars", "&,^");
 			}
 			
 			FileOutputStream propertiesOutputStream = new FileOutputStream(propertiesFile);
 			props.store(propertiesOutputStream, "");
+			if(installing) System.out.println("[" + pluginname + "Installation complete.");
 		} catch(Exception e){
 			System.out.println("[" + pluginname + "] Failed to load properties. Aborting.");
 			System.out.println("[" + pluginname + "] Error: " + e.toString());
@@ -110,7 +114,7 @@ public class settings {
 		currentProperty = props.getProperty(property);
 		String value;
     	if(currentProperty == null){
-    		System.out.println("[" + pluginname + "] Property not found: " + property + ". Resetting to: " + defaultValue);
+    		if(!installing) System.out.println("[" + pluginname + "] Property not found: " + property + ". Setting to: " + defaultValue);
     		props.setProperty(property, defaultValue);
     		value = defaultValue;
     	} else {

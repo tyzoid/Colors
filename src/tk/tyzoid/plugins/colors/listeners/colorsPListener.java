@@ -323,12 +323,14 @@ public class colorsPListener implements Listener {
 				if(plugin.isColorChar(split[1].toCharArray()[0]) && (plugin.isColorNumber(split[1].toCharArray()[1]) || plugin.isFormattingChar(split[1].toCharArray()[1]) || Character.toLowerCase(split[1].toCharArray()[0]) == 'r')){
 					char colorChar = split[1].toCharArray()[1];
 					colorLocks.put(player, colorChar);
+					plugin.data.setColorLock(player, colorChar);
 					player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour specified color has been set.");
 				} else {
 					showHelpMenu_colorlock(player);
 				}
 			} else if(split.length == 1) {
 				colorLocks.remove(player);
+				plugin.data.setColorLock(player, '0');
 				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour color lock has been removed.");
 			} else {
 				showHelpMenu_colorlock(player);
@@ -360,7 +362,11 @@ public class colorsPListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event){
     	Player player = event.getPlayer();
     	names.put(player, player.getDisplayName());
-    	
+    	char c = plugin.data.getColorLock(player);
+    	if(c != '0'){
+
+        	colorLocks.put(player, c);
+    	}
     	resetIxes(player);
     }
     
@@ -450,12 +456,14 @@ public class colorsPListener implements Listener {
 				
 				if(pend < start){
 					finalMessage += format.substring(pend, start);
-					/* Debug message */ /* Delete this to comment out --> 
+					//TODO: debug message
+					/* Debug message */ /* Delete this to comment out -->
 					System.out.println("[" + pluginname + "] (1) Player: " + player.getDisplayName() + ", Text: " + format.substring(pend, start));
 					/* End debug message */
 				}
 				
 				finalMessage += getNameProperty(format.substring(start+1, end-1), player, event.getMessage());
+				//TODO: debug message
 				/* Debug message */ /* Delete this to comment out --> 
 				String dbpmessage = getNameProperty(format.substring(start+1, end-1), player, event.getMessage());
 				System.out.println("[" + pluginname + "] (2) Player: " + player.getDisplayName() + ", Property: " + format.substring(start+1, end-1));
@@ -467,7 +475,7 @@ public class colorsPListener implements Listener {
 			
 			event.setCancelled(true);
 			plugin.getServer().broadcastMessage(plugin.convertToColor(finalMessage, rainbowEnabled));
-			
+			//TODO: debug message
 			/* Debug message */ /* Delete this to comment out --> 
 			System.out.println("[" + pluginname + " (4) Message: " + plugin.convertToColor(finalMessage, rainbowEnabled));
 			/*End debug message*/
@@ -478,13 +486,10 @@ public class colorsPListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event){
     	names.remove(event.getPlayer());
     }
-    
-    public void savePSnames(){
-    	plugin.PSnames.pluginClosing(true);
-    }
         
     public String getNameProperty(String propertyName, Player player, String message){
-    	/* Debug message */ /* Delete this to comment out -->
+    	//TODO: debug message
+    	/* Debug message */ /* Delete this to comment out --> 
     	System.out.println("[" + pluginname + "] (2) Player: " + player.getDisplayName() + ", Property: " + propertyName);
     	/*End debug message*/
     	
