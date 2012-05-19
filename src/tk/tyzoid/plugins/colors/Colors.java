@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 
@@ -63,6 +64,14 @@ public class Colors extends JavaPlugin {
 		
 		colorSettings.readSettings();
 		playerListener.plugin_init();
+
+		if(this.getServer().getOnlinePlayers().length > 0){
+			System.out.println("[" + pluginname + "] " + pluginname + " is reloading...");
+			Player[] players = this.getServer().getOnlinePlayers();
+			for(Player player : players){
+				playerListener.onPlayerJoin(new PlayerJoinEvent(player, ""));
+			}
+		}
 	}
 	
 	private void setupPermissions() {
