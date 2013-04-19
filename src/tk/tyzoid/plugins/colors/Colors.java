@@ -3,20 +3,19 @@ package tk.tyzoid.plugins.colors;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.bukkit.plugin.PluginDescriptionFile;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
 
+import tk.tyzoid.plugins.colors.cache.CacheControl;
 import tk.tyzoid.plugins.colors.lib.Metrics;
 
 import tk.tyzoid.plugins.colors.lib.Names;
 import tk.tyzoid.plugins.colors.lib.Perms;
 import tk.tyzoid.plugins.colors.lib.SaveData;
-import tk.tyzoid.plugins.colors.lib.settings;
-import tk.tyzoid.plugins.colors.listeners.colorsPListener;
+import tk.tyzoid.plugins.colors.lib.Settings;
+import tk.tyzoid.plugins.colors.listeners.ColorsPListener;
 
 /**
  * Chat plugin for Bukkit
@@ -24,23 +23,26 @@ import tk.tyzoid.plugins.colors.listeners.colorsPListener;
  * @author tyzoid
  */
 public class Colors extends JavaPlugin {
+	private static final boolean debug = false;
 	public String pluginname = "Colors";
 	public char rainbowColor = 'z';
 	
-	public settings colorSettings = new settings();
-	private final colorsPListener playerListener = new colorsPListener(this);
+	public Settings colorSettings = new Settings();
+	private final ColorsPListener playerListener = new ColorsPListener(this);
 	private final HashMap<Player, Boolean> colorify = new HashMap<Player, Boolean>();
-	public Perms permissionHandler;
+	private Perms perms;
 	public Names PSnames;
 	public SaveData data;
+	private static Colors instance;
+	public final CacheControl c = new CacheControl();
 	
 	public void onDisable() {
-		System.out.println("[" + pluginname + "] " + pluginname + " is closing...");
 		PSnames.pluginClosing(true);
 		data.pluginClosing(true);
 	}
 	
 	public void onEnable() {
+		instance = this;
 		try {
 		    Metrics metrics = new Metrics(this);
 		    metrics.start();
@@ -50,9 +52,6 @@ public class Colors extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		
 		pm.registerEvents(playerListener, this);
-		
-		PluginDescriptionFile pdfFile = this.getDescription();
-		System.out.println("[" + pluginname + "] Starting " + pluginname + " v" + pdfFile.getVersion() + "...");
 		
 		setupPermissions();
 		
@@ -64,9 +63,14 @@ public class Colors extends JavaPlugin {
 		
 		colorSettings.readSettings();
 		playerListener.plugin_init();
-
+		c.init();
+		
 		if(this.getServer().getOnlinePlayers().length > 0){
-			System.out.println("[" + pluginname + "] " + pluginname + " is reloading...");
+			System.out.println("[" + pluginname + "] ----------------------------------");
+			System.out.println("[" + pluginname + "] YOUR SERVER IS RELOADING.");
+			System.out.println("[" + pluginname + "] THIS MAY CAUSE PLUGIN ISSUES.");
+			System.out.println("[" + pluginname + "] RESTART IF YOU ENCOUNTER ANY.");
+			System.out.println("[" + pluginname + "] ----------------------------------");
 			Player[] players = this.getServer().getOnlinePlayers();
 			for(Player player : players){
 				playerListener.onPlayerJoin(new PlayerJoinEvent(player, ""));
@@ -75,11 +79,15 @@ public class Colors extends JavaPlugin {
 	}
 	
 	private void setupPermissions() {
-		permissionHandler = new Perms(this);
+		perms = Perms.getInstance();
 	}
 	
-	public boolean hasPermission(Player p, String node, boolean defaultValue) {
-		return permissionHandler.hasPermission(p, node, defaultValue);
+	public Perms p(){
+		return perms;
+	}
+	
+	public boolean hasPermission(Player p, String node) {
+		return p.hasPermission(node);
 	}
 	
 	public boolean isChatColoring(final Player player) {
@@ -230,5 +238,13 @@ public class Colors extends JavaPlugin {
 	
 	private enum formattingChars {
 		K, L, M, N, O, R
+	}
+	
+	public static Colors getInstance(){
+		return instance;
+	}
+	
+	public static boolean isDebugging(){
+		return debug;
 	}
 }

@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
-import org.bukkit.entity.Player;
-
 import tk.tyzoid.plugins.colors.Colors;
 
 //import org.bukkit.entity.Player;
@@ -33,7 +31,7 @@ public class SaveData {
 		try {
 			String path = "plugins/" + pluginname;
 			players = new File(path + "/data.list");
-			if (!players.exists()) {
+			if(!players.exists()) {
 				(new File(path)).mkdir();
 				players.createNewFile();
 			}
@@ -50,27 +48,53 @@ public class SaveData {
 		}
 	}
 	
-	public void pluginClosing(boolean show) {
-		if (show) System.out.println("[" + pluginname + "] Saving other data.");
-		try {
-			playerOut = new FileOutputStream(players);
-			
-			user.store(playerOut, comment);
-			
-			playerOut.close();
-		} catch (Exception e) {
-			System.out.println("[" + pluginname + "] Could not save other data.");
-			System.out.println("[" + pluginname + "] Error: " + e.toString());
-		}
-	}
-	
-	public char getColorLock(Player player){
-		String tmp = user.getProperty(player.getName().toLowerCase(), "0");
+	/**
+	 * Gets the color lock for a whole group (player colorlocks override this)
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public char getGroupColorLock(String group) {
+		String tmp = user.getProperty("-gcl-" + group, "-");
 		return tmp.charAt(0);
 	}
 	
-	public void setColorLock(Player player, char c){
-		user.setProperty(player.getName().toLowerCase(), Character.toString(c));
+	/**
+	 * Sets the color lock for a whole group (player colorlocks override this)
+	 * 
+	 * @param group
+	 * @param c
+	 */
+	public void setGroupColorLock(String group, char c) {
+		user.setProperty("-gcl-" + group, Character.toString(c));
+		saveData();
+	}
+	
+	/**
+	 * Gets the color lock for a player (overrides groups while set)
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public char getPlayerColorLock(String player) {
+		String tmp = user.getProperty(player.toLowerCase());
+		if(tmp == null) return user.getProperty("-pcl-" + player.toLowerCase(), "-").charAt(0);
+		if(tmp != null) {
+			user.remove(player.toLowerCase());
+			user.setProperty("-pcl-" + player.toLowerCase(), tmp.substring(0, 1));
+			saveData();
+		}
+		return tmp.charAt(0);
+	}
+	
+	/**
+	 * Sets the color lock for a player (overrides groups while set)
+	 * 
+	 * @param player
+	 * @param c
+	 */
+	public void setPlayerColorLock(String player, char c) {
+		user.setProperty("-pcl-" + player.toLowerCase(), Character.toString(c));
 		saveData();
 	}
 	
@@ -93,5 +117,19 @@ public class SaveData {
 	
 	public void saveData() {
 		pluginClosing(false);
+	}
+	
+	public void pluginClosing(boolean show) {
+		if(show) System.out.println("[" + pluginname + "] Saving other data.");
+		try {
+			playerOut = new FileOutputStream(players);
+			
+			user.store(playerOut, comment);
+			
+			playerOut.close();
+		} catch (Exception e) {
+			System.out.println("[" + pluginname + "] Could not save other data.");
+			System.out.println("[" + pluginname + "] Error: " + e.toString());
+		}
 	}
 }

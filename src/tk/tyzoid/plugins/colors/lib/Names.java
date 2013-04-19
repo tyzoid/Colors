@@ -12,8 +12,8 @@ import tk.tyzoid.plugins.colors.Colors;
 public class Names {
 	Colors plugin;
 	
-	private Properties user = new Properties();
-	private Properties group = new Properties();
+	private final Properties user = new Properties();
+	private final Properties group = new Properties();
 	
 	private String pluginname;
 	private String pComment;
@@ -94,7 +94,8 @@ public class Names {
 	
 	public String getGroupPrefix(String groupname){
 		if(group.containsKey(groupname)){
-            return (group.getProperty(groupname).split("•").length > 0) ? group.getProperty(groupname).split("•")[0] : "";
+            //return (group.getProperty(groupname).split("•").length > 0) ? group.getProperty(groupname).split("•")[0] : "";
+            return get(group.getProperty(groupname))[0];
         } else {
         	setGroupPrefix(groupname, "");
         	return null;
@@ -103,7 +104,8 @@ public class Names {
 	
 	public String getGroupSuffix(String groupname){
 		if(group.containsKey(groupname)){
-            return (group.getProperty(groupname).split("•").length > 1) ? group.getProperty(groupname).split("•")[1] : "";
+            //return (group.getProperty(groupname).split("•").length > 1) ? group.getProperty(groupname).split("•")[1] : "";
+            return get(group.getProperty(groupname))[1];
         } else {
         	setGroupPrefix(groupname, "");
         	return null;
@@ -115,36 +117,36 @@ public class Names {
 	public void setUserPrefix(String playername, String prefix){
 		if(user.containsKey(playername.toLowerCase())){
 			String suffix = (user.getProperty(playername.toLowerCase()).split("•").length > 1) ? user.getProperty(playername.toLowerCase()).split("•")[1] : "";
-			user.put(playername.toLowerCase(), prefix + "•" + suffix);
+			user.setProperty(playername.toLowerCase(), prefix + "•" + suffix);
 		} else {
-			user.put(playername.toLowerCase(), prefix + "•");
+			user.setProperty(playername.toLowerCase(), prefix + "•");
 		}
 	}
 	
 	public void setUserSuffix(String playername, String suffix){
 		if(user.containsKey(playername.toLowerCase())){
 			String prefix = (user.getProperty(playername.toLowerCase()).split("•").length > 0) ? user.getProperty(playername.toLowerCase()).split("•")[0] : "";
-			user.put(playername.toLowerCase(), prefix + "•" + suffix);
+			user.setProperty(playername.toLowerCase(), prefix + "•" + suffix);
 		} else {
-			user.put(playername.toLowerCase(), "•" + suffix);
+			user.setProperty(playername.toLowerCase(), "•" + suffix);
 		}
 	}
 	
 	public void setGroupPrefix(String groupname, String prefix){
 		if(group.containsKey(groupname)){
 			String suffix = (group.getProperty(groupname).split("•").length > 1) ? group.getProperty(groupname).split("•")[1] : "";
-			group.put(groupname, prefix + "•" + suffix);
+			group.setProperty(groupname, prefix + "•" + suffix);
 		} else {
-			group.put(groupname, prefix + "•");
+			group.setProperty(groupname, prefix + "•");
 		}
 	}
 	
 	public void setGroupSuffix(String groupname, String suffix){
 		if(group.containsKey(groupname)){
 			String prefix = (group.getProperty(groupname).split("•").length > 0) ? group.getProperty(groupname).split("•")[0] : "";
-			group.put(groupname, prefix + "•" + suffix);
+			group.setProperty(groupname, prefix + "•" + suffix);
 		} else {
-			group.put(groupname, "•" + suffix);
+			group.setProperty(groupname, "•" + suffix);
 		}
 	}
 	
@@ -172,7 +174,7 @@ public class Names {
 		try{
 			FileInputStream playerSP = new FileInputStream(players);
 			FileInputStream groupSP = new FileInputStream(groups);
-		
+			
 			user.load(playerSP);
 			group.load(groupSP);
 			
@@ -189,4 +191,22 @@ public class Names {
 	public void saveData(){
 		pluginClosing(false);
 	}
+	
+	private String[] get(String line){
+		// Change the following lines as needed
+		final int n = 3;
+		String[] fdata = new String[]{"","",""};
+		
+		String[] data = line.split("•");
+		if(data.length < n){
+			int i = 0;
+			for(String str : data){
+				fdata[i] = str;
+				i++;
+			}
+			return fdata;
+		}
+		return data;
+	}
+	
 }
