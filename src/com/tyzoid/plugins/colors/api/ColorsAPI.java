@@ -1,9 +1,10 @@
-package tk.tyzoid.plugins.colors.api;
+package com.tyzoid.plugins.colors.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import tk.tyzoid.plugins.colors.Colors;
+import com.tyzoid.plugins.colors.Colors;
+
 
 public class ColorsAPI {
 	private Colors plugin = null;
@@ -37,18 +38,18 @@ public class ColorsAPI {
 	}
 	
 	public String rainbow(String message){
-		return plugin.colorsChat(message);
+		return plugin.lib.colorsChat(message);
 	}
 	
 	public String convertToColor(String withoutColor, boolean rainbowAllowed){
-		return plugin.convertToColor(withoutColor, rainbowAllowed);
+		return plugin.lib.convertToColor(withoutColor, rainbowAllowed);
 	}
 	
 	public boolean isColorChar(char c){
-		return plugin.isColorChar(c);
+		return plugin.lib.isColorChar(c);
 	}
 	
 	public boolean isColorNumber(char c){
-		return plugin.isColorNumber(c);
+		return plugin.lib.isColorNumber(c);
 	}
 }

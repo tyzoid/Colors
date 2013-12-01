@@ -1,13 +1,15 @@
-package tk.tyzoid.plugins.colors.cache;
+package com.tyzoid.plugins.colors.cache;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import tk.tyzoid.plugins.colors.Colors;
+import com.tyzoid.plugins.colors.Colors;
+
 
 public class CacheControl {
+	private Colors plugin;
 	private final ConcurrentHashMap<String, PlayerCache> players = new ConcurrentHashMap<String, PlayerCache>(8,.9f,1);
 	
 	private final static String[] cachenodes = {
@@ -20,9 +22,12 @@ public class CacheControl {
 		"colors.colorLock"
 	};
 	
+	public CacheControl(Colors instance){
+		this.plugin = instance;
+	}
 
 	public void init(){
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(Colors.getInstance(), new Runnable(){
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable(){
 			public void run(){
 				for(PlayerCache player : players.values()){
 					player.updateCache();

@@ -1,4 +1,4 @@
-package tk.tyzoid.plugins.colors.lib;
+package com.tyzoid.plugins.colors.lib;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;

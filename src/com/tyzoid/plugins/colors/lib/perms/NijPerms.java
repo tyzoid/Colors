@@ -1,12 +1,12 @@
-package tk.tyzoid.plugins.colors.lib.perms;
+package com.tyzoid.plugins.colors.lib.perms;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import tk.tyzoid.plugins.colors.Colors;
 
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
+import com.tyzoid.plugins.colors.Colors;
 
 public class NijPerms implements Permissionsplugin {
 	private Colors plugin;
@@ -14,8 +14,8 @@ public class NijPerms implements Permissionsplugin {
 	private boolean exists = false;
 	private String pluginname;
 	
-	public NijPerms(){
-		plugin = Colors.getInstance();
+	public NijPerms(Colors instance){
+		plugin = instance;
 		pluginname = plugin.pluginname;
 		if(exists == false) setupPermissions();
 	}

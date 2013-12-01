@@ -1,10 +1,11 @@
-package tk.tyzoid.plugins.colors.lib.perms;
+package com.tyzoid.plugins.colors.lib.perms;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import tk.tyzoid.plugins.colors.Colors;
+import com.tyzoid.plugins.colors.Colors;
+
 
 import de.bananaco.bpermissions.api.util.CalculableType;
 import de.bananaco.bpermissions.api.ApiLayer;
@@ -15,8 +16,8 @@ public class bPerms implements Permissionsplugin {
 	private String pluginname;
 	private boolean exists = false;
 	
-	public bPerms(){
-		plugin = Colors.getInstance();
+	public bPerms(Colors instance){
+		plugin = instance;
 		pluginname = plugin.pluginname;
 		if(exists == false) setupPermissions();
 	}

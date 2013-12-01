@@ -1,11 +1,12 @@
-package tk.tyzoid.plugins.colors.lib.perms;
+package com.tyzoid.plugins.colors.lib.perms;
 
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import tk.tyzoid.plugins.colors.Colors;
+import com.tyzoid.plugins.colors.Colors;
+
 
 public class GMPerms implements Permissionsplugin {
 	private Colors plugin;
@@ -13,8 +14,8 @@ public class GMPerms implements Permissionsplugin {
 	private boolean exists = false;
 	private GroupManager groupManagerHandler;
 	
-	public GMPerms(){
-		plugin = Colors.getInstance();
+	public GMPerms(Colors instance){
+		plugin = instance;
 		pluginname = plugin.pluginname;
 		if(exists == false) setupPermissions();
 	}

@@ -1,4 +1,4 @@
-package tk.tyzoid.plugins.colors.listeners;
+package com.tyzoid.plugins.colors.listeners;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -10,7 +10,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 
-import tk.tyzoid.plugins.colors.Colors;
+import com.tyzoid.plugins.colors.Colors;
+
 
 public class ColorsPListener implements Listener {
 	private final HashMap<Player, String> names = new HashMap<Player, String>();
@@ -64,7 +65,7 @@ public class ColorsPListener implements Listener {
 				}
 			}
 			if(usedCommand) {
-				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §cYou do not have permissions to use that command.");
+				player.sendMessage("§cYou do not have permissions to use that command.");
 			}
 		}
 		
@@ -78,9 +79,9 @@ public class ColorsPListener implements Listener {
 					message += split[i];
 				}
 				
-				player.chat(plugin.colorsChat(message));
+				player.chat(plugin.lib.colorsChat(message));
 			} else {
-				plugin.toggleChatColoring(player);
+				plugin.lib.toggleChatColoring(player);
 			}
 			event.setCancelled(true);
 		}
@@ -99,16 +100,20 @@ public class ColorsPListener implements Listener {
 		
 		if(colorlockCommandUsed) {
 			if(split.length == 2 && split[1].length() == 2) {
-				if(plugin.isColorChar(split[1].toCharArray()[0]) && (plugin.isColorNumber(split[1].toCharArray()[1]) || plugin.isFormattingChar(split[1].toCharArray()[1]) || Character.toLowerCase(split[1].toCharArray()[0]) == 'r')) {
+				if(plugin.lib.isColorChar(split[1].toCharArray()[0])
+						&& (plugin.lib.isColorNumber(split[1].toCharArray()[1])
+								|| plugin.lib.isFormattingChar(split[1].toCharArray()[1])
+								|| Character.toLowerCase(split[1].toCharArray()[0]) == 'r')
+				) {
 					char colorChar = split[1].toCharArray()[1];
 					plugin.data.setPlayerColorLock(player.getName(), colorChar);
-					player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour specified color has been set.");
+					player.sendMessage("§bYour specified color has been set.");
 				} else {
 					showHelpMenu_colorlock(player);
 				}
 			} else if(split.length == 1) {
 				plugin.data.setPlayerColorLock(player.getName(), '-');
-				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour color lock has been removed.");
+				player.sendMessage("§bYour color lock has been removed.");
 			} else {
 				showHelpMenu_colorlock(player);
 			}
@@ -143,13 +148,13 @@ public class ColorsPListener implements Listener {
 							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
 							String PSset = mess.substring(start, mess.length());
 							plugin.PSnames.setUserPrefix(split[4], PSset);
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aUser prefix has been set.");
+							player.sendMessage("§bUser prefix has been set.");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 5) {
 							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
 							String PSset = mess.substring(start, mess.length());
 							plugin.PSnames.setGroupPrefix(split[4], PSset);
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aGroup prefix has been set.");
+							player.sendMessage("§bGroup prefix has been set.");
 							
 							Object[] str = names.values().toArray();
 							for(int i = 0; i < names.size(); i++) {
@@ -167,13 +172,13 @@ public class ColorsPListener implements Listener {
 							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
 							String PSset = mess.substring(start, mess.length());
 							plugin.PSnames.setUserSuffix(split[4], PSset);
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aUser suffix has been set.");
+							player.sendMessage("§bUser suffix has been set.");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 5) {
 							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
 							String PSset = mess.substring(start, mess.length());
 							plugin.PSnames.setGroupSuffix(split[4], PSset);
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aGroup suffix has been set.");
+							player.sendMessage("§bGroup suffix has been set.");
 							
 							Object[] str = names.values().toArray();
 							for(int i = 0; i < names.size(); i++) {
@@ -185,10 +190,32 @@ public class ColorsPListener implements Listener {
 							showHelpMenu(player);
 						}
 					} else if(split[2].equalsIgnoreCase("colorlock") || split[2].equalsIgnoreCase("cl") && split.length > 3) {
+						int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
+						String tmp = mess.substring(start, mess.length());
+						
+						if(plugin.lib.isColorChar(tmp.toCharArray()[0])
+								&& (plugin.lib.isColorNumber(tmp.toCharArray()[1])
+										|| plugin.lib.isFormattingChar(tmp.toCharArray()[1])
+										|| Character.toLowerCase(tmp.toCharArray()[1]) == rcc)
+						) {
+							char colorChar = tmp.toCharArray()[1];
+
+							if(split[3].equalsIgnoreCase("p:") && split.length > 5) {
+								plugin.data.setPlayerColorLock(split[4], colorChar);
+								player.sendMessage("§bUser colorlock has been set.");
+								resetIxes(plugin.getServer().getPlayer(split[4]));
+							} else if(split[3].equalsIgnoreCase("g:") && split.length > 5) {
+								plugin.data.setGroupColorLock(split[4], colorChar);
+								player.sendMessage("§bGroup colorlock has been set.");
+							} else {
+								showHelpMenu(player);
+							}
+						} else {
+							showHelpMenu(player);
+						}
+						//TODO: remove old code once verified
+						/*
 						if(split[3].equalsIgnoreCase("p:") && split.length > 5) {
-							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
-							String tmp = mess.substring(start, mess.length());
-							
 							if(plugin.isColorChar(tmp.toCharArray()[0]) && (plugin.isColorNumber(tmp.toCharArray()[1]) || plugin.isFormattingChar(tmp.toCharArray()[1]) || Character.toLowerCase(tmp.toCharArray()[1]) == rcc)) {
 								char colorChar = tmp.toCharArray()[1];
 								plugin.data.setPlayerColorLock(split[4], colorChar);
@@ -196,13 +223,9 @@ public class ColorsPListener implements Listener {
 								showHelpMenu(player);
 							}
 							
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aUser colorlock has been set.");
+							player.sendMessage("§bUser colorlock has been set.");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 5) {
-							int start = split[0].length() + split[1].length() + split[2].length() + split[3].length() + split[4].length() + 5;
-							
-							String tmp = mess.substring(start, mess.length());
-							
 							if(plugin.isColorChar(tmp.toCharArray()[0]) && (plugin.isColorNumber(tmp.toCharArray()[1]) || plugin.isFormattingChar(tmp.toCharArray()[1]) || Character.toLowerCase(tmp.toCharArray()[1]) == rcc)) {
 								char colorChar = tmp.toCharArray()[1];
 								plugin.data.setGroupColorLock(split[4], colorChar);
@@ -210,10 +233,10 @@ public class ColorsPListener implements Listener {
 								showHelpMenu(player);
 							}
 							
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aGroup colorlock has been set.");
+							player.sendMessage("§bGroup colorlock has been set.");
 						} else {
 							showHelpMenu(player);
-						}
+						}*/
 					} else {
 						showHelpMenu(player);
 					}
@@ -222,10 +245,10 @@ public class ColorsPListener implements Listener {
 						if(co) return; //Color only mode
 						
 						if(split[3].equalsIgnoreCase("p:") && split.length > 4) {
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s prefix is: " + plugin.PSnames.getUserPrefix(split[4]));
+							player.sendMessage("§b" + split[4] + "'s prefix is: " + plugin.PSnames.getUserPrefix(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 4) {
-							//player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] The group " + split[4] + " has the prefix: " + plugin.PSnames.getGroupPrefix(getGroup(plugin.getServer().getPlayer(split[4]))));
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] The group " + split[4] + " has the prefix: " + plugin.PSnames.getGroupPrefix(split[4]));
+							//player.sendMessage("The group " + split[4] + " has the prefix: " + plugin.PSnames.getGroupPrefix(getGroup(plugin.getServer().getPlayer(split[4]))));
+							player.sendMessage("§bThe group " + split[4] + " has the prefix: " + plugin.PSnames.getGroupPrefix(split[4]));
 						} else {
 							showHelpMenu(player);
 						}
@@ -233,10 +256,10 @@ public class ColorsPListener implements Listener {
 						if(co) return; //Color only mode
 						
 						if(split[3].equalsIgnoreCase("p:") && split.length > 4) {
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s suffix is: " + plugin.PSnames.getUserSuffix(split[4]));
+							player.sendMessage("§b" + split[4] + "'s suffix is: " + plugin.PSnames.getUserSuffix(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 4) {
-							//player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s suffix is: " + plugin.PSnames.getGroupSuffix(getGroup(plugin.getServer().getPlayer(split[4]))));
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] The group " + split[4] + " has the suffix: " + plugin.PSnames.getGroupSuffix(split[4]));
+							//player.sendMessage("§b" + split[4] + "'s suffix is: " + plugin.PSnames.getGroupSuffix(getGroup(plugin.getServer().getPlayer(split[4]))));
+							player.sendMessage("§bThe group " + split[4] + " has the suffix: " + plugin.PSnames.getGroupSuffix(split[4]));
 						} else {
 							showHelpMenu(player);
 						}
@@ -248,11 +271,11 @@ public class ColorsPListener implements Listener {
 						if(co) return; //Color only mode
 						
 						if(split[3].equalsIgnoreCase("p:") && split.length > 4) {
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s prefix is removed.");
+							player.sendMessage("§b" + split[4] + "'s prefix is removed.");
 							plugin.PSnames.setUserPrefix(split[4], "");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 4) {
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] The group " + split[4] + "'s prefix is removed.");
+							player.sendMessage("§bThe group " + split[4] + "'s prefix is removed.");
 							plugin.PSnames.setGroupPrefix(split[4], "");
 							
 							Object[] str = names.values().toArray();
@@ -268,11 +291,11 @@ public class ColorsPListener implements Listener {
 						if(co) return; //Color only mode
 						
 						if(split[3].equalsIgnoreCase("p:") && split.length > 4) {
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] " + split[4] + "'s suffix is removed.");
+							player.sendMessage("§b" + split[4] + "'s suffix is removed.");
 							plugin.PSnames.setUserSuffix(split[4], "");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 4) {
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] The group " + split[4] + "'s prefix is removed.");
+							player.sendMessage("§bThe group " + split[4] + "'s prefix is removed.");
 							plugin.PSnames.setGroupSuffix(split[4], "");
 							
 							Object[] str = names.values().toArray();
@@ -289,12 +312,12 @@ public class ColorsPListener implements Listener {
 							
 							plugin.data.setPlayerColorLock(split[4], '-');
 							
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aUser colorlock has been removed.");
+							player.sendMessage("§bUser colorlock has been removed.");
 							resetIxes(plugin.getServer().getPlayer(split[4]));
 						} else if(split[3].equalsIgnoreCase("g:") && split.length > 5) {
 							plugin.data.setPlayerColorLock(split[4], '-');
 							
-							player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aGroup colorlock has been removed.");
+							player.sendMessage("§bGroup colorlock has been removed.");
 						} else {
 							showHelpMenu(player);
 						}
@@ -330,7 +353,7 @@ public class ColorsPListener implements Listener {
 			if(split.length == 1) {
 				plugin.PSnames.setUserPrefix(player.getName(), "");
 				resetIxes(player);
-				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour user prefix has been reset.");
+				player.sendMessage("§bYour user prefix has been reset.");
 			} else {
 				int start = split[0].length() + 1;
 				String PSset = mess.substring(start, mess.length());
@@ -340,7 +363,7 @@ public class ColorsPListener implements Listener {
 				
 				plugin.PSnames.setUserPrefix(player.getName(), PSset);
 				resetIxes(player);
-				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour user prefix has been set.");
+				player.sendMessage("§bYour user prefix has been set.");
 			}
 			event.setCancelled(true);
 		}
@@ -362,7 +385,7 @@ public class ColorsPListener implements Listener {
 			if(split.length == 1) {
 				plugin.PSnames.setUserSuffix(player.getName(), "");
 				resetIxes(player);
-				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour user suffix has been reset.");
+				player.sendMessage("§bYour user suffix has been reset.");
 			} else {
 				int start = split[0].length() + 1;
 				String PSset = mess.substring(start, mess.length());
@@ -373,7 +396,7 @@ public class ColorsPListener implements Listener {
 				
 				plugin.PSnames.setUserSuffix(player.getName(), PSset);
 				resetIxes(player);
-				player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aYour user suffix has been set.");
+				player.sendMessage("§bYour user suffix has been set.");
 			}
 			event.setCancelled(true);
 		}
@@ -396,12 +419,12 @@ public class ColorsPListener implements Listener {
 			plugin.data.reloadData();
 			event.setCancelled(true);
 			
-			player.sendMessage("§b[§1C§2o§3l§4o§5r§6s§b] §aThe settings have been reloaded.");
+			player.sendMessage("§bThe settings have been reloaded.");
 		}
 	}
 	
 	private void showHelpMenu_colorlock(Player player) {
-		String[] message = { "§b[§1C§2o§3l§4o§5r§6s§b] §aSyntax: §e/<colorlock> [" + dcc + "<color>]" };
+		String[] message = { "§bSyntax: §e/<colorlock> [" + dcc + "<color>]" };
 		
 		for(int i = 0; i < message.length; i++) {
 			player.sendMessage(message[i]);
@@ -409,7 +432,7 @@ public class ColorsPListener implements Listener {
 	}
 	
 	private void showHelpMenu(Player player) {
-		String[] message = { "§b[§1C§2o§3l§4o§5r§6s§b] §aSyntax: §e/<coloradmin> [get/set/remove/reset]", "§b[§1C§2o§3l§4o§5r§6s§b] §e[prefix/suffix/colorlock/cl] [p:/g:] <user_name> (<prefix/suffix>)" };
+		String[] message = { "§bSyntax: §e/<coloradmin> [get/set/remove/reset]", "§e[prefix/suffix/colorlock/cl] [p:/g:] <user_name> (<prefix/suffix>)" };
 		
 		player.sendMessage(message);
 	}
@@ -450,7 +473,7 @@ public class ColorsPListener implements Listener {
 				suffix = (plugin.PSnames.getUserSuffix(playername).length() > 0) ? plugin.PSnames.getUserSuffix(playername) : suffix;
 			}
 			
-			displayName = plugin.convertToColor(prefix + player.getName() + suffix + "§r", true);
+			displayName = plugin.lib.convertToColor(prefix + player.getName() + suffix + "§r", true);
 			player.setDisplayName(displayName);
 			//player.setDisplayName(prefix + names.get(player) + suffix + "§f");
 		}
@@ -472,11 +495,11 @@ public class ColorsPListener implements Listener {
 		
 		if(colorPerms) {
 			String message = event.getMessage();
-			if(plugin.isChatColoring(player)) {
+			if(plugin.lib.isChatColoring(player)) {
 				if(chatFormatting) {
 					event.setMessage(dcc + rcc + message);
 				} else {
-					event.setMessage(plugin.colorsChat(message));
+					event.setMessage(plugin.lib.colorsChat(message));
 				}
 			} else {
 				char cp = plugin.data.getPlayerColorLock(player.getName());
@@ -488,7 +511,7 @@ public class ColorsPListener implements Listener {
 					message = event.getMessage();
 				}
 				if(!chatFormatting) {
-					event.setMessage(plugin.convertToColor(message, rainbowPerms));
+					event.setMessage(plugin.lib.convertToColor(message, rainbowPerms));
 				}
 			}
 		}
@@ -513,7 +536,7 @@ public class ColorsPListener implements Listener {
 					finalMessage += format.substring(pend, start);
 					//TODO: debug message
 					/* Debug message *//* Delete this to comment out --> */
-					if(Colors.isDebugging()) {
+					if(plugin.isDebugging()) {
 						System.out.println("[" + pluginname + "] (1) Player: " + player.getDisplayName() + ", Text: " + format.substring(pend, start));
 					}
 					/*End debug message */
@@ -522,7 +545,7 @@ public class ColorsPListener implements Listener {
 				finalMessage += getNameProperty(format.substring(start + 1, end - 1), player, event.getMessage());
 				//TODO: debug message
 				/* Debug message *//* Delete this to comment out --> */
-				if(Colors.isDebugging()) {
+				if(plugin.isDebugging()) {
 					String dbpmessage = getNameProperty(format.substring(start + 1, end - 1), player, event.getMessage());
 					System.out.println("[" + pluginname + "] (2) Player: " + player.getDisplayName() + ", Property: " + format.substring(start + 1, end - 1));
 					System.out.println("[" + pluginname + "] (3) Player: " + player.getDisplayName() + ", Property: " + dbpmessage);
@@ -533,11 +556,11 @@ public class ColorsPListener implements Listener {
 			}
 			
 			event.setCancelled(true);
-			plugin.getServer().broadcastMessage(plugin.convertToColor(finalMessage, rainbowEnabled).replace("♠", dcc));
+			plugin.getServer().broadcastMessage(plugin.lib.convertToColor(finalMessage, rainbowEnabled).replace("♠", dcc));
 			//TODO: debug message
 			/* Debug message *//*Delete this to comment out --> */
-			if(Colors.isDebugging()) {
-				System.out.println("[" + pluginname + " (4) Message: " + plugin.convertToColor(finalMessage, rainbowEnabled));
+			if(plugin.isDebugging()) {
+				System.out.println("[" + pluginname + " (4) Message: " + plugin.lib.convertToColor(finalMessage, rainbowEnabled));
 			}
 			/*End debug message*/
 		}
@@ -554,7 +577,7 @@ public class ColorsPListener implements Listener {
 		
 		//TODO: debug message
 		/* Debug message *//* Delete this to comment out --> */
-		if(Colors.isDebugging()) {
+		if(plugin.isDebugging()) {
 			System.out.println("[" + pluginname + "] (2) Player: " + player.getDisplayName() + ", Property: " + propertyName);
 		}
 		/*End debug message */

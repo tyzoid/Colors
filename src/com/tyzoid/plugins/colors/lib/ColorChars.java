@@ -1,93 +1,21 @@
-package tk.tyzoid.plugins.colors;
+package com.tyzoid.plugins.colors.lib;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.PluginManager;
 
-import tk.tyzoid.plugins.colors.cache.CacheControl;
-import tk.tyzoid.plugins.colors.lib.Metrics;
+import com.tyzoid.plugins.colors.Colors;
 
-import tk.tyzoid.plugins.colors.lib.Names;
-import tk.tyzoid.plugins.colors.lib.Perms;
-import tk.tyzoid.plugins.colors.lib.SaveData;
-import tk.tyzoid.plugins.colors.lib.Settings;
-import tk.tyzoid.plugins.colors.listeners.ColorsPListener;
+public class ColorChars {
+	private Settings colorSettings;
+	private Colors plugin;
 
-/**
- * Chat plugin for Bukkit
- * 
- * @author tyzoid
- */
-public class Colors extends JavaPlugin {
-	private static final boolean debug = false;
-	public String pluginname = "Colors";
-	public char rainbowColor = 'z';
-	
-	public Settings colorSettings = new Settings();
-	private final ColorsPListener playerListener = new ColorsPListener(this);
 	private final HashMap<Player, Boolean> colorify = new HashMap<Player, Boolean>();
-	private Perms perms;
-	public Names PSnames;
-	public SaveData data;
-	private static Colors instance;
-	public final CacheControl c = new CacheControl();
 	
-	public void onDisable() {
-		PSnames.pluginClosing(true);
-		data.pluginClosing(true);
-	}
-	
-	public void onEnable() {
-		instance = this;
-		try {
-		    Metrics metrics = new Metrics(this);
-		    metrics.start();
-		} catch (IOException e) {
-		    // Failed to submit the stats :(
-		}
-		PluginManager pm = getServer().getPluginManager();
+	public ColorChars(Colors instance){
+		this.plugin = instance;
 		
-		pm.registerEvents(playerListener, this);
-		
-		setupPermissions();
-		
-		PSnames = new Names(this);
-		PSnames.loadNames();
-		
-		data = new SaveData(this);
-		data.loadData();
-		
-		colorSettings.readSettings();
-		playerListener.plugin_init();
-		c.init();
-		
-		if(this.getServer().getOnlinePlayers().length > 0){
-			System.out.println("[" + pluginname + "] ----------------------------------");
-			System.out.println("[" + pluginname + "] YOUR SERVER IS RELOADING.");
-			System.out.println("[" + pluginname + "] THIS MAY CAUSE PLUGIN ISSUES.");
-			System.out.println("[" + pluginname + "] RESTART IF YOU ENCOUNTER ANY.");
-			System.out.println("[" + pluginname + "] ----------------------------------");
-			Player[] players = this.getServer().getOnlinePlayers();
-			for(Player player : players){
-				playerListener.onPlayerJoin(new PlayerJoinEvent(player, ""));
-			}
-		}
-	}
-	
-	private void setupPermissions() {
-		perms = Perms.getInstance();
-	}
-	
-	public Perms p(){
-		return perms;
-	}
-	
-	public boolean hasPermission(Player p, String node) {
-		return p.hasPermission(node);
+		colorSettings = instance.colorSettings;
 	}
 	
 	public boolean isChatColoring(final Player player) {
@@ -166,7 +94,7 @@ public class Colors extends JavaPlugin {
 		boolean[] format = {false, false, false, false, false};
 		int count = withoutColor.length();
 		char[] colorless = withoutColor.toCharArray();
-		char rcc = Character.toLowerCase(rainbowColor); // rainbow color char
+		char rcc = Character.toLowerCase(plugin.rainbowColor); // rainbow color char
 		String withColor = "";
 		for (int i = 0; i < count; i++) {
 			if ((i + 1) < count && isColorChar(colorless[i]) && isFormattingChar(colorless[i + 1])) {
@@ -238,13 +166,5 @@ public class Colors extends JavaPlugin {
 	
 	private enum formattingChars {
 		K, L, M, N, O, R
-	}
-	
-	public static Colors getInstance(){
-		return instance;
-	}
-	
-	public static boolean isDebugging(){
-		return debug;
 	}
 }

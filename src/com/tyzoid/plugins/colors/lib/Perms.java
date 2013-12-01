@@ -1,13 +1,16 @@
-package tk.tyzoid.plugins.colors.lib;
+package com.tyzoid.plugins.colors.lib;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import tk.tyzoid.plugins.colors.lib.perms.*;
+import com.tyzoid.plugins.colors.Colors;
+import com.tyzoid.plugins.colors.lib.perms.*;
+
 
 public class Perms {
 	private static Perms instance;
+	private static Colors plugin;
 	
 	private Permissionsplugin permplugin = null;
 	
@@ -18,13 +21,14 @@ public class Perms {
 		Plugin groupManagerPlugin = Bukkit.getServer().getPluginManager().getPlugin("GroupManager");
 		
 		permplugin = new Pex();
-		if(!permplugin.loadPermissions(permissionsExPlugin)) permplugin = new bPerms();
-		else if(!permplugin.loadPermissions(bPermissionsPlugin)) permplugin = new GMPerms();
-		else if(!permplugin.loadPermissions(groupManagerPlugin)) permplugin = new NijPerms();
-		else if(!permplugin.loadPermissions(permissionsPlugin)) permplugin = VaultHandler.getInstance();
+		if(!permplugin.loadPermissions(permissionsExPlugin)) permplugin = new bPerms(plugin);
+		else if(!permplugin.loadPermissions(bPermissionsPlugin)) permplugin = new GMPerms(plugin);
+		else if(!permplugin.loadPermissions(groupManagerPlugin)) permplugin = new NijPerms(plugin);
+		else if(!permplugin.loadPermissions(permissionsPlugin)) permplugin = VaultHandler.getInstance(plugin);
 	}
 	
-	public static Perms getInstance() {
+	public static Perms getInstance(Colors plugininstance) {
+		plugin = plugininstance;
 		if(instance == null) instance = new Perms();
 		return instance;
 	}

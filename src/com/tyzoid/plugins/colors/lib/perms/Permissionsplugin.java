@@ -1,4 +1,4 @@
-package tk.tyzoid.plugins.colors.lib.perms;
+package com.tyzoid.plugins.colors.lib.perms;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

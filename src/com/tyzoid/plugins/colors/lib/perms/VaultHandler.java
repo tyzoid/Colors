@@ -1,4 +1,4 @@
-package tk.tyzoid.plugins.colors.lib.perms;
+package com.tyzoid.plugins.colors.lib.perms;
 
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
@@ -8,7 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import tk.tyzoid.plugins.colors.Colors;
+import com.tyzoid.plugins.colors.Colors;
+
 
 /**
  * @author Tyzoid Singleton Class
@@ -24,6 +25,7 @@ public class VaultHandler implements Permissionsplugin {
 	private static VaultHandler instance = null;
 	private static Permission perms = null;
 	public static Chat chat = null;
+	private static Colors plugin;
 	
 	private VaultHandler() {
 		if(Bukkit.getPluginManager().getPlugin("Vault") != null){
@@ -36,14 +38,15 @@ public class VaultHandler implements Permissionsplugin {
 			chat = crsp.getProvider();
 			
 			//makes sure that Colors does not try to call itself. That would be very awkward.
-			if(chat != null && chat.getName().equalsIgnoreCase(Colors.getInstance().getName())) chat = null;
+			if(chat != null && chat.getName().equalsIgnoreCase(plugin.getName())) chat = null;
 		}
 	}
 	
 	/**
 	 * Singleton Class
 	 */
-	public static VaultHandler getInstance() {
+	public static VaultHandler getInstance(Colors plugininstance){
+		plugin = plugininstance;
 		if(instance == null) instance = new VaultHandler();
 		return instance;
 	}

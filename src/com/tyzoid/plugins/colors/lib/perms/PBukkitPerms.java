@@ -1,14 +1,14 @@
-package tk.tyzoid.plugins.colors.lib.perms;
+package com.tyzoid.plugins.colors.lib.perms;
 
 import java.util.List;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import tk.tyzoid.plugins.colors.Colors;
 
 import com.platymuus.bukkit.permissions.Group;
 import com.platymuus.bukkit.permissions.PermissionsPlugin;
+import com.tyzoid.plugins.colors.Colors;
 
 public class PBukkitPerms implements Permissionsplugin {
 	private PermissionsPlugin perms;
@@ -16,8 +16,8 @@ public class PBukkitPerms implements Permissionsplugin {
 	private String pluginname;
 	private boolean exists = false;
 	
-	public PBukkitPerms() {
-		plugin = Colors.getInstance();
+	public PBukkitPerms(Colors instance){
+		plugin = instance;
 		pluginname = plugin.pluginname;
 		if(exists == false) setupPermissions();
 	}

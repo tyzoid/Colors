@@ -1,4 +1,4 @@
-package tk.tyzoid.plugins.colors.cache;
+package com.tyzoid.plugins.colors.cache;
 
 import java.util.concurrent.ConcurrentHashMap;
 

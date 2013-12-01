@@ -1,11 +1,12 @@
-package tk.tyzoid.plugins.colors.lib;
+package com.tyzoid.plugins.colors.lib;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
-import tk.tyzoid.plugins.colors.Colors;
+import com.tyzoid.plugins.colors.Colors;
+
 
 //import org.bukkit.entity.Player;
 
