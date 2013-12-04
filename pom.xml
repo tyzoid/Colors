@@ -41,7 +41,7 @@
     <scm>
         <url>https://github.com/tyzoid/Colors</url>
         <connection>scm:git:git://github.com/tyzoid/Colors.git</connection>
-        <developerConnection>scm:git:git@github.com:UltimateDev/jailr.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:tyzoid/Colors.git</developerConnection>
     </scm>
 
     <repositories>
@@ -60,6 +60,7 @@
     </dependencies>
 
     <build>
+         <sourceDirectory>./src/</sourceDirectory>
         <defaultGoal>clean compile package</defaultGoal>
         <plugins>
             <plugin>
